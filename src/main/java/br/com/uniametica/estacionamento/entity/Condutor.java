@@ -3,7 +3,7 @@ package br.com.uniametica.estacionamento.entity;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Condutor extends Principal {
+public class Condutor extends AbstractEntity {
     private String nome;
 
     private String cpf;

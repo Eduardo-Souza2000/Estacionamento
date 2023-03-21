@@ -2,7 +2,7 @@ package br.com.uniametica.estacionamento.entity;
 
 import java.time.LocalDateTime;
 
-public class Marca extends Principal{
+public class Marca extends AbstractEntity{
     private String nome;
 
     public String getNome() {
