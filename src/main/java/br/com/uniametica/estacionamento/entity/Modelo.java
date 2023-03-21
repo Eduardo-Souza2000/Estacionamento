@@ -1,32 +1,19 @@
 package br.com.uniametica.estacionamento.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 public class Modelo extends AbstractEntity{
+    @Getter @Setter
     private String Nome;
-
+    @Getter @Setter
     private Marca marca;
 
 
-    public String getNome() {
-        return Nome;
-    }
 
-    public void setNome(String nome) {
-        Nome = nome;
-    }
 
-    public Marca getMarca() {
-        return marca;
-    }
-
-    public void setMarca(Marca marca) {
-        this.marca = marca;
-    }
-
-    public Modelo(int id, LocalDateTime cadastro, LocalDateTime edicao, boolean ativo) {
-        super(id, cadastro, edicao, ativo);
-    }
 
 
 }
