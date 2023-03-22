@@ -32,6 +32,7 @@ public abstract class AbstractEntity {
     private boolean ativo;
 
     //ANTES DE REALIZAR A PERSISTENCIA ELE VAI EXECUTAR ESSE METODO, ISSO QUE SIGNIFICA.
+    //SIGNIFICA ANTES DE REALIZAR O PROCEDIMENTO VAI REALIZAR ESSE METODO.
     @PrePersist
     private void prePersist(){
         this.cadastro = LocalDateTime.now();

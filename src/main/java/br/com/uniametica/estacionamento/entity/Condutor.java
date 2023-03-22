@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
+//Referencia de tabela
 @Table(name = "condutores", schema = "public")
 public class Condutor extends AbstractEntity {
     //OS @ CHAMAMOS DE ANNOTATION
