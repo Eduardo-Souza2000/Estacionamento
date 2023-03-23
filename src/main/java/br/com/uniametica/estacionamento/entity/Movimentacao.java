@@ -1,8 +1,6 @@
 package br.com.uniametica.estacionamento.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,11 +13,13 @@ import java.time.LocalTime;
 @Table(name = "movimentacao", schema = "public")
 public class Movimentacao extends AbstractEntity{
     @Getter @Setter
-    @Column (name = "veiculo", nullable = false, unique = true)
+    @JoinColumn (name = "veiculo", nullable = false, unique = true)
+    @ManyToOne
     private Veiculo veiculo;
 
     @Getter @Setter
-    @Column(name = "condutor", nullable = false)
+    @JoinColumn (name = "condutor", nullable = false)
+    @ManyToOne
     private Condutor condutor;
 
     @Getter @Setter

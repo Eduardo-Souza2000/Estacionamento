@@ -1,8 +1,6 @@
 package br.com.uniametica.estacionamento.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +13,8 @@ public class Modelo extends AbstractEntity{
     @Column(name = "nome", nullable = false, unique = true, length = 50)
     private String Nome;
     @Getter @Setter
-    @Column(name = "marca", nullable = false)
+    @JoinColumn(name = "marca", nullable = false)
+    @ManyToOne
     private Marca marca;
 
 }
