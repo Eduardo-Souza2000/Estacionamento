@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 @Entity
 //Referencia de tabela
-@Table(name = "movimentacao", schema = "public")
+@Table(name = "movimentacoes", schema = "public")
 public class Movimentacao extends AbstractEntity{
     @Getter @Setter
     @JoinColumn (name = "veiculo", nullable = false, unique = true)
