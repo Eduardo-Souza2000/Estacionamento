@@ -13,7 +13,7 @@ public class Veiculo extends AbstractEntity {
     private String placa;
     @Getter @Setter
     @JoinColumn (name = "modelo", nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Modelo modelo;
     @Getter @Setter
     @Column(name = "cor", length = 20, nullable = false)

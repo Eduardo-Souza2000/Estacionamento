@@ -18,6 +18,7 @@ import java.util.Optional;
 public class MovimentacaoController {
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
+
     @GetMapping
     public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
         final Movimentacao movimentacao = this.movimentacaoRepository.findById(id).orElse(null);

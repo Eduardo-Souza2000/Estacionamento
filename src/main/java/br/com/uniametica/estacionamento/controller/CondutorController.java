@@ -31,6 +31,8 @@ public class CondutorController {
         return ResponseEntity.ok(this.condutorRepository.findAll());
     }
 
+
+
     @PostMapping
 
     public ResponseEntity<?> cadastrar(@RequestBody final Condutor condutor){
