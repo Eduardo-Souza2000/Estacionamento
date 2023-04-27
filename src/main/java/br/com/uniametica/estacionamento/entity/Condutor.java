@@ -5,13 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.Value;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
 //Referencia de tabela
 @Table(name = "condutores", schema = "public")
+@Audited
+@AuditTable(value = "condutor_audit", schema = "audit")
 public class Condutor extends AbstractEntity {
     //OS @ CHAMAMOS DE ANNOTATION
     @Getter @Setter
