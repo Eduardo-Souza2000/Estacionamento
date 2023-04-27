@@ -31,6 +31,10 @@ public class CondutorController {
         return ResponseEntity.ok(this.condutorRepository.findAll());
     }
 
+    @GetMapping({"/ativo"})
+    public ResponseEntity<?> getAtivos(){
+        return ResponseEntity.ok(this.condutorRepository.findByAtivoTrue());
+    }
 
 
     @PostMapping

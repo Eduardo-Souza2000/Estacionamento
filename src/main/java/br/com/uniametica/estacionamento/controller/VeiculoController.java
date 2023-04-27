@@ -31,6 +31,11 @@ public class VeiculoController {
         return ResponseEntity.ok(this.veiculoRepository.findAll());
     }
 
+    @GetMapping({"/ativo"})
+    public ResponseEntity<?> getAtivos(){
+        return ResponseEntity.ok(this.veiculoRepository.findByAtivoTrue());
+    }
+
     @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody final Veiculo veiculo){
         try{

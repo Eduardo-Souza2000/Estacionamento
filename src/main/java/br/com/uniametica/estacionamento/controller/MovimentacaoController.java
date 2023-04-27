@@ -33,6 +33,11 @@ public class MovimentacaoController {
         return ResponseEntity.ok(this.movimentacaoRepository.findAll());
     }
 
+    @GetMapping({"/ativo"})
+    public ResponseEntity<?> getAtivos(){
+        return ResponseEntity.ok(this.movimentacaoRepository.findByAtivoTrue());
+    }
+
 /*
     @GetMapping ({"/ativo"})
     public ResponseEntity<?> ListaAtivo(@PathVariable boolean ativo){

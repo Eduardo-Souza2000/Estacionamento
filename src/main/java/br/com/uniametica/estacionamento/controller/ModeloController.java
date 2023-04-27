@@ -49,6 +49,12 @@ public class ModeloController {
     }
 
 
+    @GetMapping({"/ativo"})
+    public ResponseEntity<?> getAtivos(){
+        return ResponseEntity.ok(this.modeloRepository.findByAtivoTrue());
+    }
+
+
    @PostMapping
 
     public ResponseEntity<?> cadastrar(@RequestBody final Modelo modelo){
