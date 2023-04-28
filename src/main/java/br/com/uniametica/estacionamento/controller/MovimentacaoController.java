@@ -3,6 +3,7 @@ package br.com.uniametica.estacionamento.controller;
 import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
+import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping (value = "/api/movimentacao")
@@ -108,6 +110,34 @@ public class MovimentacaoController {
                 return ResponseEntity.internalServerError().body("ERROR" + e.getMessage());
             }
 */
+
+
+    @DeleteMapping
+    public ResponseEntity<?> delete( @RequestParam("id") final Long id){
+
+        try {
+            Movimentacao movimentacao = this.movimentacaoRepository.findById(id).orElse(null);
+
+            if(movimentacao != null && movimentacao.isAtivo() == true){
+                movimentacao.setAtivo(false);
+                movimentacaoRepository.save(movimentacao);
+                return ResponseEntity.ok("Registro desativado com sucesso!");
+            }
+            else if (movimentacao != null && movimentacao.isAtivo() == false){
+                return ResponseEntity.badRequest().body("Movimentaçao ja esta desativada");
+            }
+            else {
+                return ResponseEntity.badRequest().body("Id Invalido");
+            }
+
+
+        }
+            catch (DataIntegrityViolationException e){
+                return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
+
+        }
+
+    }
 
 }
 

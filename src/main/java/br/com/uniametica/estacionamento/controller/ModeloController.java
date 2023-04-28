@@ -1,13 +1,19 @@
 package br.com.uniametica.estacionamento.controller;
 
 import br.com.uniametica.estacionamento.entity.Modelo;
+import br.com.uniametica.estacionamento.entity.Movimentacao;
+import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
+import br.com.uniametica.estacionamento.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping (value = "/api/modelo")
@@ -17,21 +23,9 @@ public class ModeloController {
 
     @Autowired
     private ModeloRepository modeloRepository;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
-/*
-
-    public ModeloController(ModeloRepository modeloRepository) {
-        this.modeloRepository = modeloRepository;
-    }
-
-
-
-   @GetMapping("/{id}")
-    public ResponseEntity<Modelo> findByIdPath(@PathVariable("id") final Long id){
-        return ResponseEntity.ok(this.modeloRepository.findById(id).orElse(null));
-    }
-
-*/
 
 
     @GetMapping
@@ -94,27 +88,44 @@ public class ModeloController {
     }
 
 
-/*
+
+
     @DeleteMapping
-    public ResponseEntity<?> delete(@RequestParam("id") final Long id)
+    public ResponseEntity<?> delete( @RequestParam("id") final Long id){
+        try {
+            Modelo modelo = this.modeloRepository.findById(id).orElse(null);
+            AtomicBoolean var = new AtomicBoolean(false);
+            AtomicBoolean exclui = new AtomicBoolean(false);
 
-    {
-        try{
-            final Modelo modelobanco = this.modeloRepository.findById(id).orElse(null);
+            final List<Veiculo> veiculo = this.veiculoRepository.findAll();
 
-            if (modelobanco == null || !modelo.getId().equals(modelobanco.getId())){
-                throw new RuntimeException("Não foi possivel identificar o registro informado");
+            veiculo.forEach(i -> {
+                if (id == i.getModelo().getId()) {
+                    var.set(true);
+                } else if  (id != i.getModelo().getId() && modelo != null){
+                    exclui.set(true);
+                }
+
+            });
+
+            if(var.get() == true){
+                modelo.setAtivo(false);
+                modeloRepository.save(modelo);
+                return ResponseEntity.ok("Registro desativado com sucesso!");
+            } else if (exclui.get() == true) {
+                modeloRepository.delete(modelo);
+                return ResponseEntity.ok("Registro deletado com sucesso");
+
+            } else {
+                return ResponseEntity.badRequest().body("Id invalido");
             }
 
-            this.modeloRepository.save(modelo);
-            return ResponseEntity.ok("Registro Atualizado com sucesso");
+
+        } catch (DataIntegrityViolationException e){
+            return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
 
         }
-        catch (DataIntegrityViolationException e){
-            return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
-        }
-        catch (RuntimeException e){
-            return ResponseEntity.internalServerError().body("ERROR" + e.getMessage());
-        }
-    }*/
+
+    }
+
 }
