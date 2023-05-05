@@ -5,15 +5,13 @@ import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.beans.Transient;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -23,6 +21,32 @@ public class ModeloService {
     private ModeloRepository modeloRepository;
     @Autowired
     private VeiculoRepository veiculoRepository;
+
+
+    public Optional<Modelo> procurar(Long id){
+
+        if (!modeloRepository.ProcuraId(id) ){
+            throw new RuntimeException("ID inválido - Motivo: Nao Existe no Banco de Dados");
+        }else {
+            Optional<Modelo> modelo = this.modeloRepository.findById(id);
+            return modelo;
+        }
+
+    }
+
+    public List<Modelo> procurarLista(){
+
+        List<Modelo> modelo = modeloRepository.findAll();
+        return modelo;
+    }
+
+    public List<Modelo> procurarAtivo(){
+
+        List<Modelo> modelo = modeloRepository.findByAtivoTrue();
+        return modelo;
+    }
+
+
 
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(@RequestBody final Modelo modelo){
@@ -74,6 +98,8 @@ public class ModeloService {
 
 
         }
+
+
 
     @Transactional(rollbackFor = Exception.class)
     public void editar(@RequestParam("id") final Long id, @RequestBody final  Modelo modelo) {

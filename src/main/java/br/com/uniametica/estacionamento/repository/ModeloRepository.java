@@ -18,6 +18,11 @@ public interface ModeloRepository extends JpaRepository <Modelo, Long> {
     @Query(value = "select exists (select * from modelos where nome = :nome)", nativeQuery = true)
     boolean existente(@Param("nome") final String nome);
 
+    @Query(value = "select exists (select * from modelos where id = :id)", nativeQuery = true)
+    boolean ProcuraId(@Param("id") final Long id);
+
+
+
 /*
     public List<Modelo> findByNome(final String nome);
 
