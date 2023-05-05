@@ -1,2 +1,11 @@
-package br.com.uniametica.estacionamento.service;public class CondutorService {
+package br.com.uniametica.estacionamento.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CondutorService {
+
+
+
+
 }

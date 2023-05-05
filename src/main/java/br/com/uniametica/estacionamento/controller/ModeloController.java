@@ -5,6 +5,7 @@ import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
+import br.com.uniametica.estacionamento.service.ModeloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,9 +23,13 @@ public class ModeloController {
     //DUAS FORMAS DE FAZER O AUTORWIRED
 
     @Autowired
-    private ModeloRepository modeloRepository;
+    private ModeloService modeloService;
     @Autowired
     private VeiculoRepository veiculoRepository;
+
+    @Autowired
+    private ModeloRepository modeloRepository;
+    private Modelo modelo;
 
 
 
@@ -50,13 +55,12 @@ public class ModeloController {
 
 
    @PostMapping
-
     public ResponseEntity<?> cadastrar(@RequestBody final Modelo modelo){
        try{
-           this.modeloRepository.save(modelo);
+           this.modeloService.cadastrar(modelo);
            return ResponseEntity.ok("Registro Cadastrado com sucesso");
        } catch (Exception e){
-           return ResponseEntity.badRequest().body("ERRO" + e.getMessage());
+           return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
        }
 
    }
@@ -69,13 +73,7 @@ public class ModeloController {
             @RequestBody final  Modelo modelo
     ) {
        try{
-           final Modelo modelobanco = this.modeloRepository.findById(id).orElse(null);
-
-           if (modelobanco == null || !modelo.getId().equals(modelobanco.getId())){
-               throw new RuntimeException("Não foi possivel identificar o registro informado");
-           }
-
-           this.modeloRepository.save(modelo);
+           this.modeloService.editar(id,modelo);
            return ResponseEntity.ok("Registro Atualizado com sucesso");
 
        }
@@ -93,37 +91,12 @@ public class ModeloController {
     @DeleteMapping
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
-            Modelo modelo = this.modeloRepository.findById(id).orElse(null);
-            AtomicBoolean var = new AtomicBoolean(false);
-            AtomicBoolean exclui = new AtomicBoolean(false);
 
-            final List<Veiculo> veiculo = this.veiculoRepository.findAll();
-
-            veiculo.forEach(i -> {
-                if (id == i.getModelo().getId()) {
-                    var.set(true);
-                } else if  (id != i.getModelo().getId() && modelo != null){
-                    exclui.set(true);
-                }
-
-            });
-
-            if(var.get() == true){
-                modelo.setAtivo(false);
-                modeloRepository.save(modelo);
-                return ResponseEntity.ok("Registro desativado com sucesso!");
-            } else if (exclui.get() == true) {
-                modeloRepository.delete(modelo);
-                return ResponseEntity.ok("Registro deletado com sucesso");
-
-            } else {
-                return ResponseEntity.badRequest().body("Id invalido");
-            }
-
+            this.modeloService.delete(id);
+            return ResponseEntity.ok("Registro Cadastrado com sucesso");
 
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
-
         }
 
     }
