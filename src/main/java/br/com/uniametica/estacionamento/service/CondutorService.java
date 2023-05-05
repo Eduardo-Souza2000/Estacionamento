@@ -2,15 +2,22 @@ package br.com.uniametica.estacionamento.service;
 
 import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Modelo;
+import br.com.uniametica.estacionamento.entity.Movimentacao;
+import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.CondutorRepository;
 import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
-public class CondutorService {/*
+public class CondutorService {
     @Autowired
     private CondutorRepository condutorRepository;
 
@@ -18,24 +25,115 @@ public class CondutorService {/*
     private MovimentacaoRepository movimentacaoRepository;
 
 
+    public Optional<Condutor> procurarCondutor(Long id){
+
+        if (!condutorRepository.idExistente(id) ){
+            throw new RuntimeException("ID inválido - Motivo: Nao Existe no Banco de Dados");
+        }else {
+            Optional<Condutor> condutor = this.condutorRepository.findById(id);
+            return condutor;
+        }
+
+    }
+
+    public List<Condutor> procurarLista(){
+
+        List<Condutor> condutor = condutorRepository.findAll();
+        return condutor;
+    }
+
+    public List<Condutor> procurarAtivo(){
+
+        List<Condutor> condutor = condutorRepository.findByAtivoTrue();
+        return condutor;
+    }
+
+
+
 
     @Transactional(rollbackFor = Exception.class)
-    public void cadastrar(@RequestBody final Condutor condutor){
+    public void cadastrar(final Condutor condutor){
 
         if(condutor.getNome() == null){
             throw new RuntimeException("Nome inválido");
         }
         else if(condutor.getCpf() == null){
-            throw new RuntimeException("Marca inválido");
-        }
-        if(condutor.getCadastro() == null){
+            throw new RuntimeException("Cpf inválido");
+        } else if (condutor.getTelefone() == null) {
+            throw new RuntimeException("Telefone inválido");
+        } else if(condutor.getCadastro() == null){
             throw new RuntimeException("Data Cadastro Invalido");
-        }
-        else{
+        } else if (condutorRepository.nomeExistente(condutor.getNome())) {
+            throw new RuntimeException("Nome Repetido");
+        } else if (condutorRepository.idExistente(condutor.getId())) {
+            throw new RuntimeException("ID Repetido");
+        } else if (condutorRepository.telefoneExistente(condutor.getTelefone())) {
+            throw new RuntimeException("Telefone Repetido chefe");
+        } else if (condutorRepository.cpfExistente(condutor.getCpf())) {
+            throw new RuntimeException("CPF Repetido chefe");
+        } else{
             condutorRepository.save(condutor);
         }
 
     }
-*/
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void editarCondutor(@RequestParam("id") final Long id, @RequestBody final  Condutor condutor) {
+
+        final Condutor condutorbanco  = this.condutorRepository.findById(id).orElse(null);
+
+        if (condutorbanco == null || !condutor.getId().equals(condutorbanco.getId())) {
+            throw new RuntimeException("Não foi possivel identificar o registro informado");
+        } else if (!condutor.getNome().matches("[a-zA-Z]{2,50}")){
+            throw new RuntimeException("Nome inválido");
+        } else if (condutorRepository.nomeExistente(condutor.getNome())) {
+            throw new RuntimeException("Nome Repetido");
+        } else if(condutor.getCpf() == null){
+            throw new RuntimeException("CPF inválido");
+        } else{
+            condutorRepository.save(condutor);
+        }
+
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void delete( @RequestParam("id") final Long id) {
+
+        Condutor condutor = this.condutorRepository.findById(id).orElse(null);
+        AtomicBoolean var = new AtomicBoolean(false);
+        AtomicBoolean exclui = new AtomicBoolean(false);
+
+        final List<Movimentacao> movimentacao = this.movimentacaoRepository.findAll();
+
+        movimentacao.forEach(i -> {
+            if (id == i.getCondutor().getId()) {
+                var.set(true);
+            } else if (id != i.getCondutor().getId() && condutor != null) {
+                exclui.set(true);
+            }
+
+        });
+
+        if (var.get() == true) {
+            condutor.setAtivo(false);
+            condutorRepository.save(condutor);
+            throw new RuntimeException("Registro desativado com sucesso!");
+        } else if (exclui.get() == true) {
+            condutorRepository.delete(condutor);
+            throw new RuntimeException("Registro deletado com sucesso");
+
+        } else {
+            throw new RuntimeException("Id invalido");
+        }
+
+    }
+
+
+
+
+
+
 
 }

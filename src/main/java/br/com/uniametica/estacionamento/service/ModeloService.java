@@ -49,7 +49,7 @@ public class ModeloService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void cadastrar(@RequestBody final Modelo modelo){
+    public void cadastrarModelo(final Modelo modelo){
 
         if(modelo.getNome() == null){
             throw new RuntimeException("Nome inválido");
@@ -65,6 +65,7 @@ public class ModeloService {
         }
 
     }
+
 
     @Transactional(rollbackFor = Exception.class)
     public void delete( @RequestParam("id") final Long id) {

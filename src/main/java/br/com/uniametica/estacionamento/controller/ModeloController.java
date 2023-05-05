@@ -61,7 +61,7 @@ public class ModeloController {
    @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody final Modelo modelo){
        try{
-           this.modeloService.cadastrar(modelo);
+           this.modeloService.cadastrarModelo(modelo);
            return ResponseEntity.ok("Registro Cadastrado com sucesso");
        } catch (Exception e){
            return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
