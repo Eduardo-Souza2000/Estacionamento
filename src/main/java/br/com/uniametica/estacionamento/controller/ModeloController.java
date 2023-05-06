@@ -96,7 +96,7 @@ public class ModeloController {
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
             this.modeloService.delete(id);
-            return ResponseEntity.ok("Registro Cadastrado com sucesso");
+            return ResponseEntity.ok("Registro Alterado com sucesso");
 
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());

@@ -28,6 +28,6 @@ public class Veiculo extends AbstractEntity {
 
     @Getter @Setter
     @Column(name = "ano", nullable = false, length = 10)
-    private int ano;
+    private Integer ano;
 
 }

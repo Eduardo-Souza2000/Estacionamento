@@ -87,8 +87,7 @@ public class CondutorController {
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
             this.condutorService.delete(id);
-            return ResponseEntity.ok("Registro Cadastrado com sucesso");
-
+            return ResponseEntity.ok("Registro Desativado");
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
         }

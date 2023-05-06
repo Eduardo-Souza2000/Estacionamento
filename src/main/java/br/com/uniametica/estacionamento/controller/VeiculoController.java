@@ -1,9 +1,11 @@
 package br.com.uniametica.estacionamento.controller;
 
+import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
+import br.com.uniametica.estacionamento.service.VeiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -18,39 +20,45 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class VeiculoController {
 
     @Autowired
-    private VeiculoRepository veiculoRepository;
-    @Autowired
-    private MovimentacaoRepository movimentacaoRepository;
+    private VeiculoService veiculoService;
 
     @GetMapping
     public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
-        final Veiculo veiculo = this.veiculoRepository.findById(id).orElse(null);
 
-        return veiculo == null
-                ? ResponseEntity.badRequest().body("nenhum valor encontrado.")
-                : ResponseEntity.ok(veiculo);
+        try{
+            return ResponseEntity.ok(veiculoService.procurarVeiculo(id));
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
+        }
+
     }
+
 
     @GetMapping ({"/lista"})
     public ResponseEntity<?> Listacompleta(){
-        return ResponseEntity.ok(this.veiculoRepository.findAll());
+        return ResponseEntity.ok(veiculoService.procurarLista());
     }
+
 
     @GetMapping({"/ativo"})
     public ResponseEntity<?> getAtivos(){
-        return ResponseEntity.ok(this.veiculoRepository.findByAtivoTrue());
+        return ResponseEntity.ok(veiculoService.procurarAtivo());
     }
+
+
+
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody final Veiculo veiculo){
         try{
-            this.veiculoRepository.save(veiculo);
+            this.veiculoService.cadastrar(veiculo);
             return ResponseEntity.ok("Registro Cadastrado com sucesso");
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("ERRO" + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
         }
 
     }
+
 
 
     @PutMapping
@@ -59,13 +67,7 @@ public class VeiculoController {
             @RequestBody final  Veiculo veiculo
     ) {
         try{
-            final Veiculo veiculobanco = this.veiculoRepository.findById(id).orElse(null);
-
-            if (veiculobanco == null || !veiculobanco.getId().equals(veiculobanco.getId())){
-                throw new RuntimeException("Não foi possivel identificar o registro informado");
-            }
-
-            this.veiculoRepository.save(veiculo);
+            this.veiculoService.editarVeiculo(id,veiculo);
             return ResponseEntity.ok("Registro Atualizado com sucesso");
 
         }
@@ -79,39 +81,14 @@ public class VeiculoController {
 
 
 
+
     @DeleteMapping
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
-            Veiculo veiculo = this.veiculoRepository.findById(id).orElse(null);
-            AtomicBoolean var = new AtomicBoolean(false);
-            AtomicBoolean exclui = new AtomicBoolean(false);
-
-            final List<Movimentacao> movimentacao = this.movimentacaoRepository.findAll();
-                    movimentacao.forEach(i -> {
-                        if (id == i.getVeiculo().getId()) {
-                            var.set(true);
-                        } else if  (id != i.getVeiculo().getId() && veiculo != null){
-                            exclui.set(true);
-                        }
-
-                    });
-
-                    if(var.get() == true){
-                        veiculo.setAtivo(false);
-                        veiculoRepository.save(veiculo);
-                        return ResponseEntity.ok("Registro desativado com sucesso!");
-                    } else if (exclui.get() == true) {
-                        veiculoRepository.delete(veiculo);
-                        return ResponseEntity.ok("Registro deletado com sucesso");
-
-                    } else {
-                        return ResponseEntity.badRequest().body("Id invalido");
-                    }
-
-
+            this.veiculoService.delete(id);
+            return ResponseEntity.ok("Registro Desativado");
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
-
         }
 
     }

@@ -5,6 +5,7 @@ import br.com.uniametica.estacionamento.repository.CondutorRepository;
 import br.com.uniametica.estacionamento.repository.MarcaRepository;
 
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
+import br.com.uniametica.estacionamento.service.MarcaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -17,59 +18,54 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @RequestMapping (value = "/api/marca")
 public class MarcaController {
     @Autowired
-    private MarcaRepository marcaRepository;
-    @Autowired
-    private ModeloRepository modeloRepository;
+    private MarcaService marcaService;
+
 
     @GetMapping
     public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
-        final Marca marca = this.marcaRepository.findById(id).orElse(null);
 
-        return marca == null
-                ? ResponseEntity.badRequest().body("nenhum valor encontrado.")
-                : ResponseEntity.ok(marca);
-    }
-
-    @GetMapping({"/ativo"})
-    public ResponseEntity<?> getAtivos(){
-        return ResponseEntity.ok(this.marcaRepository.findByAtivoTrue());
-    }
-
-    @GetMapping ({"/lista"})
-    public ResponseEntity<?> Listacompleta(){
-
-        return ResponseEntity.ok(this.marcaRepository.findAll());
-    }
-
-
-
-
-    @PostMapping
-
-    public ResponseEntity<?> cadastrar(@RequestBody final Marca marca ){
         try{
-            this.marcaRepository.save(marca);
-            return ResponseEntity.ok("Registro Cadastrado com sucesso");
+            return ResponseEntity.ok(marcaService.procurar(id));
         } catch (Exception e){
-            return ResponseEntity.badRequest().body("ERRO" + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
         }
 
     }
 
 
+    @GetMapping ({"/lista"})
+    public ResponseEntity<?> Listacompleta(){
+        return ResponseEntity.ok(marcaService.procurarLista());
+    }
+
+
+    @GetMapping({"/ativo"})
+    public ResponseEntity<?> getAtivos(){
+        return ResponseEntity.ok(marcaService.procurarAtivo());
+    }
+
+
+
+    @PostMapping
+    public ResponseEntity<?> cadastrar(@RequestBody final Marca marca){
+        try{
+            this.marcaService.cadastrarMarca(marca);
+            return ResponseEntity.ok("Registro Cadastrado com sucesso");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
+        }
+
+    }
+
+
+
     @PutMapping
     public ResponseEntity<?> editar(
             @RequestParam("id") final Long id,
-            @RequestBody final Marca marca
+            @RequestBody final  Marca marca
     ) {
         try{
-            final Marca marcabanco = this.marcaRepository.findById(id).orElse(null);
-
-            if (marcabanco == null || !marca.getId().equals(marcabanco.getId())){
-                throw new RuntimeException("Não foi possivel identificar o registro informado");
-            }
-
-            this.marcaRepository.save(marca);
+            this.marcaService.editar(id,marca);
             return ResponseEntity.ok("Registro Atualizado com sucesso");
 
         }
@@ -81,44 +77,20 @@ public class MarcaController {
         }
     }
 
+
+
+
     @DeleteMapping
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
-            Marca marca = this.marcaRepository.findById(id).orElse(null);
-            AtomicBoolean var = new AtomicBoolean(false);
-            AtomicBoolean exclui = new AtomicBoolean(false);
-
-            final List<Modelo> modelo = this.modeloRepository.findAll();
-
-            modelo.forEach(i -> {
-                if (id == i.getMarca().getId()) {
-                    var.set(true);
-                } else if  (id != i.getMarca().getId() && marca != null){
-                    exclui.set(true);
-                }
-
-            });
-
-            if(var.get() == true){
-                marca.setAtivo(false);
-                marcaRepository.save(marca);
-                return ResponseEntity.ok("Registro desativado com sucesso!");
-            } else if (exclui.get() == true) {
-                marcaRepository.delete(marca);
-                return ResponseEntity.ok("Registro deletado com sucesso");
-
-            } else {
-                return ResponseEntity.badRequest().body("Id invalido");
-            }
-
+            this.marcaService.delete(id);
+            return ResponseEntity.ok("Registro Alterado com sucesso");
 
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
-
         }
 
     }
-
 
 
 

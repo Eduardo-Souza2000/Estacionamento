@@ -1,5 +1,6 @@
 package br.com.uniametica.estacionamento.service;
 
+import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
@@ -70,35 +71,20 @@ public class ModeloService {
     @Transactional(rollbackFor = Exception.class)
     public void delete( @RequestParam("id") final Long id) {
 
-            Modelo modelo = this.modeloRepository.findById(id).orElse(null);
-            AtomicBoolean var = new AtomicBoolean(false);
-            AtomicBoolean exclui = new AtomicBoolean(false);
 
-            final List<Veiculo> veiculo = this.veiculoRepository.findAll();
-
-            veiculo.forEach(i -> {
-                if (id == i.getModelo().getId()) {
-                    var.set(true);
-                } else if (id != i.getModelo().getId() && modelo != null) {
-                    exclui.set(true);
-                }
-
-            });
-
-            if (var.get() == true) {
-                modelo.setAtivo(false);
-                modeloRepository.save(modelo);
-                throw new RuntimeException("Registro desativado com sucesso!");
-            } else if (exclui.get() == true) {
-                modeloRepository.delete(modelo);
-                throw new RuntimeException("Registro deletado com sucesso");
-
-            } else {
-                throw new RuntimeException("Id invalido");
-            }
+        Modelo modelo = this.modeloRepository.findById(id).orElse(null);
 
 
+        if(modeloRepository.modeloExistente(modelo.getId())){
+            modelo.setAtivo(false);
+            modeloRepository.save(modelo);
+        }else {
+            modeloRepository.delete(modelo);
         }
+
+
+
+    }
 
 
 

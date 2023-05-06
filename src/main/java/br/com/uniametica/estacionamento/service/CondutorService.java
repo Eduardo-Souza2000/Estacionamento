@@ -102,31 +102,16 @@ public class CondutorService {
     public void delete( @RequestParam("id") final Long id) {
 
         Condutor condutor = this.condutorRepository.findById(id).orElse(null);
-        AtomicBoolean var = new AtomicBoolean(false);
-        AtomicBoolean exclui = new AtomicBoolean(false);
 
-        final List<Movimentacao> movimentacao = this.movimentacaoRepository.findAll();
 
-        movimentacao.forEach(i -> {
-            if (id == i.getCondutor().getId()) {
-                var.set(true);
-            } else if (id != i.getCondutor().getId() && condutor != null) {
-                exclui.set(true);
-            }
-
-        });
-
-        if (var.get() == true) {
+        if(condutorRepository.condutorExistente(condutor.getId())){
             condutor.setAtivo(false);
             condutorRepository.save(condutor);
-            throw new RuntimeException("Registro desativado com sucesso!");
-        } else if (exclui.get() == true) {
+        }else {
             condutorRepository.delete(condutor);
-            throw new RuntimeException("Registro deletado com sucesso");
-
-        } else {
-            throw new RuntimeException("Id invalido");
         }
+
+
 
     }
 
