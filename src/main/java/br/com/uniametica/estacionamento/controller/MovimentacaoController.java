@@ -21,11 +21,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MovimentacaoController {
     @Autowired
     private MovimentacaoService  movimentacaoService;
+
     @GetMapping
     public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
 
         try{
-            return ResponseEntity.ok(veiculoService.procurarVeiculo(id));
+            return ResponseEntity.ok(movimentacaoService.procuraMovimentacao(id));
         } catch (Exception e){
             return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
         }
@@ -35,22 +36,22 @@ public class MovimentacaoController {
 
     @GetMapping ({"/lista"})
     public ResponseEntity<?> Listacompleta(){
-        return ResponseEntity.ok(veiculoService.procurarLista());
+        return ResponseEntity.ok(movimentacaoService.procurarLista());
     }
 
 
     @GetMapping({"/ativo"})
     public ResponseEntity<?> getAtivos(){
-        return ResponseEntity.ok(veiculoService.procurarAtivo());
+        return ResponseEntity.ok(movimentacaoService.procurarAtivo());
     }
 
 
 
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody final Veiculo veiculo){
+    public ResponseEntity<?> cadastrar(@RequestBody final Movimentacao movimentacao){
         try{
-            this.veiculoService.cadastrar(veiculo);
+            this.movimentacaoService.cadastrar(movimentacao);
             return ResponseEntity.ok("Registro Cadastrado com sucesso");
         } catch (Exception e){
             return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
@@ -63,10 +64,10 @@ public class MovimentacaoController {
     @PutMapping
     public ResponseEntity<?> editar(
             @RequestParam("id") final Long id,
-            @RequestBody final  Veiculo veiculo
+            @RequestBody final  Movimentacao movimentacao
     ) {
         try{
-            this.veiculoService.editarVeiculo(id,veiculo);
+            this.movimentacaoService.editarMovimentacao(id,movimentacao);
             return ResponseEntity.ok("Registro Atualizado com sucesso");
 
         }
@@ -84,7 +85,7 @@ public class MovimentacaoController {
     @DeleteMapping
     public ResponseEntity<?> delete( @RequestParam("id") final Long id){
         try {
-            this.veiculoService.delete(id);
+            this.movimentacaoService.delete(id);
             return ResponseEntity.ok("Registro Desativado");
         } catch (DataIntegrityViolationException e){
             return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
