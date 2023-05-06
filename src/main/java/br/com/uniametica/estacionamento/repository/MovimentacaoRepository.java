@@ -10,14 +10,10 @@ import java.util.List;
 
 public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Long> {
     List<Movimentacao> findByAtivoTrue();
-    @Query(value = "select exists (select * from movimentacoes where veiculo = :id)", nativeQuery = true)
-    boolean veiculoExistente(@Param("id") final Long id);
 
 
-    @Query(value = "select exists (select * from veiculos where id = :id)", nativeQuery = true)
-    boolean veiculoIdExistentes(@Param("id") final Long id);
 
-    @Query(value = "select exists (select * from veiculos where id = :id)", nativeQuery = true)
+    @Query(value = "select exists (select * from movimentacoes where id = :id)", nativeQuery = true)
     boolean ProcuraId(@Param("id") final Long id);
 
 
