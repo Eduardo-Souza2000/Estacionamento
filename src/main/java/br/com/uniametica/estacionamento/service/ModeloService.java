@@ -20,8 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ModeloService {
     @Autowired
     private ModeloRepository modeloRepository;
-    @Autowired
-    private VeiculoRepository veiculoRepository;
+
 
 
     public Optional<Modelo> procurar(Long id){

@@ -1,6 +1,7 @@
 package br.com.uniametica.estacionamento.service;
 
 import br.com.uniametica.estacionamento.entity.Configuracao;
+import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
 import jakarta.persistence.Access;
@@ -18,9 +19,11 @@ public class ConfiguracaoService {
     @Autowired
     private ConfiguracaoRepository configuracaoRepository;
 
+
+
     public Optional<Configuracao> procuraconfiguracao(Long id){
 
-        if (!configuracaoRepository.ProcuraId(id) ){
+        if (!configuracaoRepository.ProcuraConfiguracaoId(id) ){
             throw new RuntimeException("ID inválido - Motivo: Nao Existe no Banco de Dados");
         }else {
             Optional<Configuracao> configuracao = this.configuracaoRepository.findById(id);

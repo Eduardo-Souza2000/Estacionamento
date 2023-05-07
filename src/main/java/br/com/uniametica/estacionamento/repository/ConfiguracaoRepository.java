@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 public interface ConfiguracaoRepository extends JpaRepository<Configuracao, Long> {
 
     @Query(value = "select exists (select * from configuracoes where id = :id)", nativeQuery = true)
-    boolean ProcuraId(@Param("id") final Long id);
+    boolean ProcuraConfiguracaoId(@Param("id") final Long id);
 
 }
