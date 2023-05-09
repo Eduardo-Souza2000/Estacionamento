@@ -94,7 +94,7 @@ public class CondutorService {
             throw new RuntimeException(" Nome Repetido");
         } else if(condutor.getCpf() == null){
             throw new RuntimeException(" CPF inválido");
-        } else if (condutor.getTelefone().matches("^[0-9\s]{2}[0-9]{4,5}[-][0-9]{4}")) {
+        } else if (!condutor.getTelefone().matches("^[0-9\s]{2}[0-9]{4,5}[-][0-9]{4}$")) {
             throw new RuntimeException(" Telefone com Número Faltando");
         } else{
             condutorRepository.save(condutor);
