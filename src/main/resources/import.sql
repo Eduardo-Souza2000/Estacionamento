@@ -7,7 +7,7 @@ insert into marcas (id,ativo,dt_atualizacao,dt_cadastro,nome) Values (1,true,'10
 insert into modelos (id,ativo,dt_atualizacao,dt_cadastro,nome, marca) Values (1,true,'10-05-2000 10:05:20', '10-05-2000 10:05:20','biz',1);
 
 
-insert into condutores (id,ativo,dt_atualizacao,dt_cadastro,cpf,nome,telefone, tempodesconto,tempogasto) Values (1,true,'10-05-2000 10:05:20', '10-05-2000 10:05:20', '102.987.859.02', 'eduardo', '45 35257073', '00:00:00', '00:00:00');
+insert into condutores (id,ativo,dt_atualizacao,dt_cadastro,cpf,nome,telefone, tempodesconto,tempogasto) Values (1,true,'10-05-2000 10:05:20', '10-05-2000 10:05:20', '102.987.859-02', 'eduardo', '45 3525-7073', '00:00:00', '00:00:00');
 
 
 insert into configuracoes(id,ativo,dt_atualizacao,dt_cadastro,fimexpediente,vgerardesconto,inicioexpediente,tempodedesconto,tempoparadesconto, vagascarro,vagasmoto,vagasvan,valorhora,valorminutomulta)values(1,true,'10-05-2000 10:05:20','10-05-2000 10:05:20', '18:00:00', false, '08:00:00','00:00:00','00:00:00','25','25','25','10.00','01.00' )

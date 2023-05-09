@@ -55,10 +55,13 @@ public class CondutorService {
     public void cadastrar(final Condutor condutor){
 
         if(condutor.getNome() == null){
+            throw new RuntimeException("Nome Nulo");
+        } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")) {
             throw new RuntimeException("Nome inválido");
-        }
-        else if(condutor.getCpf() == null){
+        } else if(condutor.getCpf() == null){
             throw new RuntimeException("Cpf inválido");
+        } else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+            throw new RuntimeException(" Número de cpf faltando");
         } else if (condutor.getTelefone() == null) {
             throw new RuntimeException("Telefone inválido");
         } else if(condutor.getCadastro() == null){
@@ -84,13 +87,15 @@ public class CondutorService {
         final Condutor condutorbanco  = this.condutorRepository.findById(id).orElse(null);
 
         if (condutorbanco == null || !condutor.getId().equals(condutorbanco.getId())) {
-            throw new RuntimeException("Não foi possivel identificar o registro informado");
-        } else if (!condutor.getNome().matches("[a-zA-Z]{2,50}")){
-            throw new RuntimeException("Nome inválido");
+            throw new RuntimeException(" Não foi possivel identificar o registro informado");
+        } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
+            throw new RuntimeException(" Nome inválido");
         } else if (condutorRepository.nomeExistente(condutor.getNome())) {
-            throw new RuntimeException("Nome Repetido");
+            throw new RuntimeException(" Nome Repetido");
         } else if(condutor.getCpf() == null){
-            throw new RuntimeException("CPF inválido");
+            throw new RuntimeException(" CPF inválido");
+        } else if (condutor.getTelefone().matches("^[0-9\s]{2}[0-9]{4,5}[-][0-9]{4}")) {
+            throw new RuntimeException(" Telefone com Número Faltando");
         } else{
             condutorRepository.save(condutor);
         }
