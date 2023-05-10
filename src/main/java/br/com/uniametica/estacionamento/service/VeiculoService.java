@@ -54,6 +54,8 @@ public class VeiculoService {
             throw new RuntimeException("Não foi possivel identificar o registro informado");
         } else if (veiculo.getPlaca() == null){
             throw new RuntimeException("Placa inválido");
+        } else if (!veiculo.getPlaca().matches("^[A-Z]{3}[-][0-9]{1}[A-Z]{1}[0-9]{2}$ | ^[A-Z]{3}[-][0-9]{4}$ | ^[A-Z]{3}[-][0-9]{3} | [A-Z0-9]")) {
+         throw new RuntimeException(" Placa Invalida");
         } else if (veiculo.getModelo() == null){
             throw new RuntimeException("modelo inválido");
         } else if (veiculo.getCor() == null) {

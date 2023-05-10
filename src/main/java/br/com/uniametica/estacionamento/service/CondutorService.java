@@ -90,7 +90,9 @@ public class CondutorService {
             throw new RuntimeException(" Não foi possivel identificar o registro informado");
         } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido");
-        } else if (condutorRepository.nomeExistente(condutor.getNome())) {
+        } else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+            throw new RuntimeException(" Número de cpf faltando");
+        }else if (condutorRepository.nomeExistente(condutor.getNome())) {
             throw new RuntimeException(" Nome Repetido");
         } else if(condutor.getCpf() == null){
             throw new RuntimeException(" CPF inválido");
