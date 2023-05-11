@@ -74,8 +74,11 @@ public class MovimentacaoService {
 
 
        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
-        movimentacao.setTempoMultaHora(tempoMulta/60);
+        if(tempoMulta % 60 != 0)
+            tempoMulta+=60;
 
+
+        movimentacao.setTempoMultaHora(tempoMulta/60);
         movimentacaoRepository.save(movimentacao);
 
 
@@ -91,11 +94,10 @@ public class MovimentacaoService {
         int minuto = 0;
 
         if (inicioExpediente.isAfter(entrada.toLocalTime())){
-             minuto = ((int) Duration.between(entrada,inicioExpediente).getSeconds()) /60;
+             minuto = ((int) Duration.between(entrada.toLocalTime(),inicioExpediente).getSeconds()) /60;
         }
         if (fimExpediente.isBefore(saida.toLocalTime())){
-            minuto += ((int) Duration.between(saida,fimExpediente).getSeconds()) / 60;
-
+            minuto += ((int) Duration.between(fimExpediente,saida.toLocalTime()).getSeconds()) / 60;
         }
 
         return minuto;

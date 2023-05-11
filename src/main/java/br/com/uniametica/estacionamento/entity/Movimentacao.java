@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Table(name = "movimentacoes", schema = "public")
 public class Movimentacao extends AbstractEntity{
     @Getter @Setter
-    @JoinColumn (name = "veiculo", nullable = false, unique = true)
+    @JoinColumn (name = "veiculo", nullable = false)
     @ManyToOne
     private Veiculo veiculo;
 
