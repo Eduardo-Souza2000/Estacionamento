@@ -1,7 +1,9 @@
 package br.com.uniametica.estacionamento.service;
 
+import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
+import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
 import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +23,8 @@ import java.util.Optional;
 public class MovimentacaoService {
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
+    @Autowired
+    private ConfiguracaoRepository configuracaoRepository;
 
 
     public Optional<Movimentacao> procuraMovimentacao(Long id){
@@ -48,7 +55,7 @@ public class MovimentacaoService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void editarMovimentacao(@RequestParam("id") final Long id, @RequestBody final  Movimentacao movimentacao) {
+    public void editarMovimentacao(final Long id, final  Movimentacao movimentacao) {
 
         final Movimentacao  movimantacaobanco = this.movimentacaoRepository.findById(id).orElse(null);
 
@@ -64,8 +71,35 @@ public class MovimentacaoService {
             movimentacaoRepository.save(movimentacao);
         }
 
+
+
+       int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
+        movimentacao.setTempoMultaHora(tempoMulta/60);
+
+        movimentacaoRepository.save(movimentacao);
+
+
+
     }
 
+    private int calculaMulta(final Configuracao configuracao, final Movimentacao movimentacao){
+
+        LocalDateTime entrada = movimentacao.getEntrada();
+        LocalDateTime saida = movimentacao.getSaida();
+        LocalTime inicioExpediente = configuracao.getInicioExpediente();
+        LocalTime fimExpediente = configuracao.getFimExpediente();
+        int minuto = 0;
+
+        if (inicioExpediente.isAfter(entrada.toLocalTime())){
+             minuto = ((int) Duration.between(entrada,inicioExpediente).getSeconds()) /60;
+        }
+        if (fimExpediente.isBefore(saida.toLocalTime())){
+            minuto += ((int) Duration.between(saida,fimExpediente).getSeconds()) / 60;
+
+        }
+
+        return minuto;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(final Movimentacao movimentacao){
@@ -99,5 +133,9 @@ public class MovimentacaoService {
         }
 
     }
+
+
+
+    
 
 }
