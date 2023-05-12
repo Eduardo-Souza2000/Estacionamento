@@ -74,11 +74,21 @@ public class MovimentacaoService {
 
 
        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
+       int calculaTempo = calculaTempo(movimentacao);
+
         if(tempoMulta % 60 != 0)
             tempoMulta+=60;
 
 
         movimentacao.setTempoMultaHora(tempoMulta/60);
+        movimentacao.setTempoMultaMinuto(tempoMulta);
+
+        movimentacao.setTempoTotalhora(calculaTempo/60);
+        movimentacao.setTempoTotalminuto(calculaTempo);
+
+
+
+
         movimentacaoRepository.save(movimentacao);
 
 
@@ -102,6 +112,20 @@ public class MovimentacaoService {
 
         return minuto;
     }
+
+    private int calculaTempo (final Movimentacao movimentacao){
+        int tempo=0;
+        LocalDateTime tempoEntrada = movimentacao.getEntrada();
+        LocalDateTime tempoSaida = movimentacao.getSaida();
+
+        tempo += ((int) Duration.between(tempoEntrada.toLocalTime(),tempoSaida.toLocalTime()).getSeconds() / 60);
+        //int entrada = Duration.ofSeconds((Long.valueOf(tempoEntrada.toEpochSecond())));
+
+        return tempo;
+
+    }
+
+
 
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(final Movimentacao movimentacao){
