@@ -1,8 +1,10 @@
 package br.com.uniametica.estacionamento.service;
 
+import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
+import br.com.uniametica.estacionamento.repository.CondutorRepository;
 import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
 import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,10 @@ public class MovimentacaoService {
     private MovimentacaoRepository movimentacaoRepository;
     @Autowired
     private ConfiguracaoRepository configuracaoRepository;
+    @Autowired
+    private CondutorRepository condutorRepository;
+
+    private Condutor condutor;
 
 
     public Optional<Movimentacao> procuraMovimentacao(Long id){
@@ -75,6 +81,7 @@ public class MovimentacaoService {
 
        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
        int calculaTempo = calculaTempo(movimentacao);
+       int calculatempoCondutor = calculaTempo(movimentacao);
 
         if(tempoMulta % 60 != 0)
             tempoMulta+=60;
@@ -83,11 +90,13 @@ public class MovimentacaoService {
         movimentacao.setTempoMultaHora(tempoMulta/60);
         movimentacao.setTempoMultaMinuto(tempoMulta);
 
-        movimentacao.setTempoTotalhora(calculaTempo/60);
-        movimentacao.setTempoTotalminuto(calculaTempo);
+        movimentacao.setTempoTotalhora(calculaTempo);
+        movimentacao.setTempoTotalminuto(calculaTempo*60);
 
 
 
+        calculatempoCondutor += calculatempoCondutor;
+        condutor.setTempototal(calculatempoCondutor);
 
         movimentacaoRepository.save(movimentacao);
 
@@ -113,13 +122,14 @@ public class MovimentacaoService {
         return minuto;
     }
 
-    private int calculaTempo (final Movimentacao movimentacao){
+    public int calculaTempo (final Movimentacao movimentacao){
         int tempo=0;
         LocalDateTime tempoEntrada = movimentacao.getEntrada();
         LocalDateTime tempoSaida = movimentacao.getSaida();
 
-        tempo += ((int) Duration.between(tempoEntrada.toLocalTime(),tempoSaida.toLocalTime()).getSeconds() / 60);
-        //int entrada = Duration.ofSeconds((Long.valueOf(tempoEntrada.toEpochSecond())));
+        tempo =  (int)  Duration.between(tempoEntrada,tempoSaida).getSeconds()/3600;
+
+
 
         return tempo;
 

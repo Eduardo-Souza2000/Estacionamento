@@ -25,6 +25,11 @@ public class CondutorService {
     private MovimentacaoRepository movimentacaoRepository;
 
 
+
+    private Movimentacao movimentacao;
+
+
+
     public Optional<Condutor> procurarCondutor(Long id){
 
         if (!condutorRepository.idExistente(id) ){
@@ -78,6 +83,7 @@ public class CondutorService {
             condutorRepository.save(condutor);
         }
 
+
     }
 
 
@@ -101,6 +107,8 @@ public class CondutorService {
         } else{
             condutorRepository.save(condutor);
         }
+
+
 
     }
 
