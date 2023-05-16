@@ -81,7 +81,6 @@ public class MovimentacaoService {
 
        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
        int calculaTempo = calculaTempo(movimentacao);
-       int calculatempoCondutor = calculaTempo(movimentacao);
 
         if(tempoMulta % 60 != 0)
             tempoMulta+=60;
