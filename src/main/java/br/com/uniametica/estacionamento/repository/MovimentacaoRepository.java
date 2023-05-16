@@ -12,7 +12,6 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Long>
     List<Movimentacao> findByAtivoTrue();
 
 
-
     @Query(value = "select exists (select * from movimentacoes where id = :id)", nativeQuery = true)
     boolean ProcuraId(@Param("id") final Long id);
 

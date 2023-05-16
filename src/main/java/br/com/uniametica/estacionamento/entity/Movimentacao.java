@@ -74,6 +74,33 @@ public class Movimentacao extends AbstractEntity{
     @Column(name = "valorhoramulta")
     private BigDecimal valorHoraMulta;
 
+    @Override
+    public String toString(){
+
+        return
+                ("Bem Vindo Ao Estacionamento do Semestre" + "\n") +
+                ("-----------------------------------------------------------------") +
+                ("*********  DADOS DO CLIENTE  ************************************") +
+                ("Condutor: " + getCondutor() + "\n") +
+                ("Nome do Veiculo: " + this.getVeiculo() + "\n") +
+                ("Hora da Entrada: " + getEntrada() + "\n") +
+                ("Hora Saida: " + getSaida() + "\n") +
+                ("-----------------------------------------------------------------") +
+                ("*********  TEMPO NO ESTABELECIMENTO  ************************************") +
+                ("Tempo Total estacionado: " + getTempoTotalhora() + ":" + getTempoTotalminuto() + "\n") +
+                ("Tempo Multa  por Tempo Excepente: " + getTempoMultaHora() + ":"  + getTempoMultaMinuto() + "\n") +
+                ("Tempo De Desconto: " + getTempoDesconto() + "\n") +
+                ("-----------------------------------------------------------------") +
+                ("*********  FINANCEIRO  ************************************") +
+                ( "Valor Por Hora: R$ " + getValorHora() + "\n") +
+                ( "Valor por Hora Multa R$ " + getValorHoraMulta() + "\n") +
+                ("Valor Desconto: R$ " + getValorDesconto() + "\n") +
+                ("Valor da Multa R$ " + getValorMulta() + "\n") +
+                ("Valor Total A pagar R$ " + getValorTotal() + "\n");
+
+    }
+
+
 
 
 }
