@@ -93,10 +93,6 @@ public class MovimentacaoService {
         movimentacao.setTempoTotalminuto(calculaTempo*60);
 
 
-
-        calculatempoCondutor += calculatempoCondutor;
-        condutor.setTempototal(calculatempoCondutor);
-
         movimentacaoRepository.save(movimentacao);
 
 
@@ -104,6 +100,8 @@ public class MovimentacaoService {
     }
 
     private int calculaMulta(final Configuracao configuracao, final Movimentacao movimentacao){
+
+
 
         LocalDateTime entrada = movimentacao.getEntrada();
         LocalDateTime saida = movimentacao.getSaida();
@@ -127,8 +125,6 @@ public class MovimentacaoService {
         LocalDateTime tempoSaida = movimentacao.getSaida();
 
         tempo =  (int)  Duration.between(tempoEntrada,tempoSaida).getSeconds()/3600;
-
-
 
         return tempo;
 
@@ -169,9 +165,5 @@ public class MovimentacaoService {
 
     }
 
-
-
-
-    
 
 }
