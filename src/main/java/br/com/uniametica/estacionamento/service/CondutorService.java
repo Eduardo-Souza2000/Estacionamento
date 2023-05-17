@@ -25,7 +25,6 @@ public class CondutorService {
     private MovimentacaoRepository movimentacaoRepository;
 
 
-
     private Movimentacao movimentacao;
 
 
