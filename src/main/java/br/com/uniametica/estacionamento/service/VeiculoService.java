@@ -2,6 +2,7 @@ package br.com.uniametica.estacionamento.service;
 
 import br.com.uniametica.estacionamento.entity.Marca;
 import br.com.uniametica.estacionamento.entity.Veiculo;
+import br.com.uniametica.estacionamento.repository.MarcaRepository;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
 import jakarta.validation.constraints.Null;
@@ -21,6 +22,8 @@ public class VeiculoService {
     VeiculoRepository veiculoRepository;
     @Autowired
     private ModeloRepository modeloRepository;
+    @Autowired
+    private MarcaRepository marcaRepository;
 
 
     public Optional<Veiculo> procurarVeiculo(Long id){
@@ -101,6 +104,15 @@ public class VeiculoService {
         }
         if (veiculo.getModelo() == null){
             throw new RuntimeException("modelo inválido");
+        }
+        if(veiculo.getModelo().getMarca() == null){
+            throw new RuntimeException("Marca inválido");
+        }
+        if (!modeloRepository.modeloExistente(veiculo.getModelo().getId())){
+            throw new RuntimeException("Modelo Nao existe no Banco de Dados");
+        }
+        if (!marcaRepository.marcaIdExistentes(veiculo.getModelo().getMarca().getId())){
+            throw new RuntimeException("Marca Nao existe no Banco de Dados");
         }
         if (veiculo.getCor() == null) {
             throw new RuntimeException("Cor inválido");
