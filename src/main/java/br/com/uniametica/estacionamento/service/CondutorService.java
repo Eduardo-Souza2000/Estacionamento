@@ -24,6 +24,8 @@ public class CondutorService {
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
 
+    @Autowired
+    private MovimentacaoService movimentacaoService;
 
     private Movimentacao movimentacao;
 
@@ -85,6 +87,7 @@ public class CondutorService {
            if (condutorRepository.cpfExistente(condutor.getCpf())) {
                 throw new RuntimeException("CPF Repetido chefe");
             }
+
 
 
            condutorRepository.save(condutor);

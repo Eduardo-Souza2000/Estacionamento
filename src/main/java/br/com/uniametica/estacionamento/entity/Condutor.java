@@ -32,7 +32,7 @@ public class Condutor extends AbstractEntity {
     private LocalTime tempoPago;
     @Getter @Setter
     @Column(name = "tempototal")
-    private Integer tempototal;
+    private int tempototal;
     @Getter @Setter
     @Column(name = "tempodesconto")
     private LocalTime tempoDesconto;

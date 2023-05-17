@@ -121,7 +121,6 @@ public class MovimentacaoService {
         movimentacao.getCondutor().setTempototal(calculatempoCondutor);
 
 
-
         movimentacaoRepository.save(movimentacao);
 
     }
