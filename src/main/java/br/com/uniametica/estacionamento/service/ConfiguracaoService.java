@@ -33,27 +33,32 @@ public class ConfiguracaoService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void editarMovimentacao(@RequestParam("id") final Long id, @RequestBody final  Configuracao configuracao) {
+    public void editarMovimentacao(@RequestParam("id")  Long id, @RequestBody  Configuracao configuracao) {
 
         final Configuracao configuracaobanco = this.configuracaoRepository.findById(id).orElse(null);
         if (configuracaobanco == null || !configuracao.getId().equals(configuracaobanco.getId())) {
             throw new RuntimeException("Não foi possivel identificar o registro informado");
-        } else if (configuracao.getFimExpediente() == null){
+        }
+        if (configuracao.getFimExpediente() == null){
             throw new RuntimeException(" Fim do expediente inválido");
-        } else if (configuracao.getInicioExpediente() == null) {
+        }
+        if (configuracao.getInicioExpediente() == null) {
             throw new RuntimeException(" Inicio do expediente inválido");
-        } else if (configuracao.getTempoDeDesconto() == null){
+        }
+        if (configuracao.getTempoDeDesconto() == null){
             throw new RuntimeException(" Tempo de desconto inválido");
-        } else if (configuracao.getValorHora() == null) {
+        }
+        if (configuracao.getValorHora() == null) {
             throw new RuntimeException(" Valor da Hora inválido");
-        } else if (configuracao.getTempoParaDesconto() == null){
+        }
+        if (configuracao.getTempoParaDesconto() == null){
             throw new RuntimeException(" Tempo para desconto inválido");
-        } else if (configuracao.getValorMinutoMulta() == null) {
+        }
+        if (configuracao.getValorMinutoMulta() == null) {
             throw new RuntimeException(" Valor minuto Multa inválido");
-        } else {
-            configuracaoRepository.save(configuracao);
         }
 
+        configuracaoRepository.save(configuracao);
 
     }
 
@@ -63,25 +68,28 @@ public class ConfiguracaoService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void cadastrar(final Configuracao configuracao){
+    public void cadastrar( Configuracao configuracao){
 
         if (configuracao.getFimExpediente() == null){
             throw new RuntimeException(" Fim do expediente inválido");
-        } else if (configuracao.getInicioExpediente() == null) {
+        }
+        if (configuracao.getInicioExpediente() == null) {
             throw new RuntimeException(" Inicio do expediente inválido");
-        } else if (configuracao.getTempoDeDesconto() == null){
+        }
+        if (configuracao.getTempoDeDesconto() == null){
             throw new RuntimeException(" Tempo de desconto inválido");
-        } else if (configuracao.getValorHora() == null) {
+        }
+        if (configuracao.getValorHora() == null) {
             throw new RuntimeException(" Valor da Hora inválido");
-        } else if (configuracao.getTempoParaDesconto() == null){
+        }
+        if (configuracao.getTempoParaDesconto() == null){
             throw new RuntimeException(" Tempo para desconto inválido");
-        } else if (configuracao.getValorMinutoMulta() == null) {
+        }
+        if (configuracao.getValorMinutoMulta() == null) {
             throw new RuntimeException(" Valor minuto Multa inválido");
-        } else {
-            configuracaoRepository.save(configuracao);
         }
 
-
+        configuracaoRepository.save(configuracao);
     }
 
 

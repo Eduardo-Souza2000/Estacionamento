@@ -43,34 +43,38 @@ public class MarcaService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void editar(@RequestParam("id") final Long id, @RequestBody final  Marca marca) {
+    public void editar(@RequestParam("id")  Long id, @RequestBody  Marca marca) {
 
         final Marca marcabanco = this.marcaRepository.findById(id).orElse(null);
 
         if (marcabanco == null || !marca.getId().equals(marcabanco.getId())) {
             throw new RuntimeException("Não foi possivel identificar o registro informado");
-        } else if (!marca.getNome().matches("[a-zA-Z]{2,50}")){
-            throw new RuntimeException("Nome inválido");
-        } else if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
-            throw new RuntimeException("Nome Repetido");
-        } else{
-            marcaRepository.save(marca);
         }
+        if (!marca.getNome().matches("[a-zA-Z]{2,50}")){
+            throw new RuntimeException("Nome inválido");
+        }
+        if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
+            throw new RuntimeException("Nome Repetido");
+        }
+
+        marcaRepository.save(marca);
 
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void cadastrarMarca(final Marca marca){
+    public void cadastrarMarca( Marca marca){
 
         if(marca.getNome() == null) {
             throw new RuntimeException("Nome inválido");
-        } else if (marcaRepository.marcaIdExistentes(marca.getId())) {
-            throw new RuntimeException(" Id da Marca já existe");
-        }else if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
-            throw new RuntimeException(" Nome da Marca já existe");
-        } else{
-            marcaRepository.save(marca);
         }
+        if (marcaRepository.marcaIdExistentes(marca.getId())) {
+            throw new RuntimeException(" Id da Marca já existe");
+        }
+        if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
+            throw new RuntimeException(" Nome da Marca já existe");
+        }
+
+        marcaRepository.save(marca);
 
     }
 

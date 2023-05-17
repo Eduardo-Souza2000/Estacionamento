@@ -51,18 +51,16 @@ public class ModeloService {
     @Transactional(rollbackFor = Exception.class)
     public void cadastrarModelo(final Modelo modelo){
 
-        if(modelo.getNome() == null){
-            throw new RuntimeException("Nome inválido");
+
+        if (!modelo.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
+            throw new RuntimeException(" Nome inválido favor verificar como escreveu o nome se esta correto");
         }
-        else if(modelo.getMarca() == null){
+         if(modelo.getMarca() == null){
             throw new RuntimeException("Marca inválido");
         }
-        if(modelo.getCadastro() == null){
-            throw new RuntimeException("Data Cadastro Invalido");
-        }
-        else{
-            modeloRepository.save(modelo);
-        }
+
+
+        modeloRepository.save(modelo);
 
     }
 

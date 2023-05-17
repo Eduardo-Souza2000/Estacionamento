@@ -39,6 +39,8 @@ public abstract class AbstractEntity {
         this.ativo = true;
     }
 
+
+    @PreUpdate
     private void preUpdate(){
         this.atualizacao = LocalDateTime.now();
     }

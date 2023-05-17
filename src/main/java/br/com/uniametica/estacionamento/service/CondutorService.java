@@ -57,64 +57,74 @@ public class CondutorService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void cadastrar(final Condutor condutor){
+    public void cadastrar(Condutor condutor){
 
-        if(condutor.getNome() == null){
-            throw new RuntimeException("Nome Nulo");
-        } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")) {
-            throw new RuntimeException("Nome inválido");
-        } else if(condutor.getCpf() == null){
-            throw new RuntimeException("Cpf inválido");
-        } else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
-            throw new RuntimeException(" Número de cpf faltando");
-        } else if (condutor.getTelefone() == null) {
-            throw new RuntimeException("Telefone inválido");
-        } else if(condutor.getCadastro() == null){
-            throw new RuntimeException("Data Cadastro Invalido");
-        } else if (condutorRepository.nomeExistente(condutor.getNome())) {
-            throw new RuntimeException("Nome Repetido");
-        } else if (condutorRepository.idExistente(condutor.getId())) {
-            throw new RuntimeException("ID Repetido");
-        } else if (condutorRepository.telefoneExistente(condutor.getTelefone())) {
-            throw new RuntimeException("Telefone Repetido chefe");
-        } else if (condutorRepository.cpfExistente(condutor.getCpf())) {
-            throw new RuntimeException("CPF Repetido chefe");
-        } else{
-            condutorRepository.save(condutor);
-        }
+            if(condutor.getNome() == null){
+                throw new RuntimeException("Nome Nulo");
+            }
+            if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")) {
+                throw new RuntimeException("Nome inválido");
+            }
+            if(condutor.getCpf() == null){
+                throw new RuntimeException("Cpf inválido");
+            }
+            if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+                throw new RuntimeException(" Número de cpf faltando");
+            }
+            if (condutor.getTelefone() == null) {
+                throw new RuntimeException("Telefone inválido");
+            }
+            if (condutorRepository.nomeExistente(condutor.getNome())) {
+                throw new RuntimeException("Nome Repetido");
+            }
+           if (condutorRepository.idExistente(condutor.getId())) {
+               throw new RuntimeException("ID Repetido");
+           }
+           if (condutorRepository.telefoneExistente(condutor.getTelefone())) {
+                throw new RuntimeException("Telefone Repetido chefe");
+            }
+           if (condutorRepository.cpfExistente(condutor.getCpf())) {
+                throw new RuntimeException("CPF Repetido chefe");
+            }
 
+
+           condutorRepository.save(condutor);
 
     }
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void editarCondutor(@RequestParam("id") final Long id, @RequestBody final  Condutor condutor) {
+    public void editarCondutor(@RequestParam("id")  Long id, @RequestBody Condutor condutor) {
 
         final Condutor condutorbanco  = this.condutorRepository.findById(id).orElse(null);
 
         if (condutorbanco == null || !condutor.getId().equals(condutorbanco.getId())) {
             throw new RuntimeException(" Não foi possivel identificar o registro informado");
-        } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
+        }
+        if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido");
-        } else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+        }
+        if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
             throw new RuntimeException(" Número de cpf faltando");
-        }else if (condutorRepository.nomeExistente(condutor.getNome())) {
+        }
+        if (condutorRepository.nomeExistente(condutor.getNome())) {
             throw new RuntimeException(" Nome Repetido");
-        } else if(condutor.getCpf() == null){
+        }
+        if(condutor.getCpf() == null) {
             throw new RuntimeException(" CPF inválido");
-        } else if (!condutor.getTelefone().matches("^[0-9\s]{2}[0-9]{4,5}[-][0-9]{4}$")) {
+        }
+        if (!condutor.getTelefone().matches("^[0-9\s]{2,3}[0-9]{4,5}[-][0-9]{4}$")) {
             throw new RuntimeException(" Telefone com Número Faltando");
-        } else{
-            condutorRepository.save(condutor);
         }
 
+        condutorRepository.save(condutor);
 
 
     }
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete( @RequestParam("id") final Long id) {
+    public void delete( @RequestParam("id") Long id) {
 
         Condutor condutor = this.condutorRepository.findById(id).orElse(null);
 
@@ -122,7 +132,7 @@ public class CondutorService {
         if(condutorRepository.condutorExistente(condutor.getId())){
             condutor.setAtivo(false);
             condutorRepository.save(condutor);
-        }else {
+        } else {
             condutorRepository.delete(condutor);
         }
 

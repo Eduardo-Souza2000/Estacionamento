@@ -67,21 +67,43 @@ public class MovimentacaoService {
 
         if (movimantacaobanco == null || !movimentacao.getId().equals(movimantacaobanco.getId())) {
             throw new RuntimeException("Não foi possivel identificar o registro informado");
-        } else if (movimentacao.getCondutor() == null){
+        }
+        if (movimentacao.getCondutor() == null){
             throw new RuntimeException(" Condutor inválido");
-        } else if (movimentacao.getVeiculo() == null) {
+        }
+        if (movimentacao.getVeiculo() == null) {
             throw new RuntimeException(" Veiculo inválido");
-        } else if (movimentacao.getEntrada() == null) {
+        }
+        if (movimentacao.getEntrada() == null) {
             throw new RuntimeException(" Entrada inválido");
-        } else{
-            movimentacaoRepository.save(movimentacao);
+        }
+
+
+        movimentacaoRepository.save(movimentacao);
+    }
+
+
+
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void cadastrar(final Movimentacao movimentacao){
+
+        if (movimentacao.getCondutor() == null){
+            throw new RuntimeException(" Condutor inválido");
+        }
+        if (movimentacao.getVeiculo() == null) {
+            throw new RuntimeException(" Veiculo inválido");
+        }
+        if (movimentacao.getEntrada() == null) {
+            throw new RuntimeException(" Entrada inválido");
         }
 
 
 
-       int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
-       int calculaTempo = calculaTempo(movimentacao);
-       int calculatempoCondutor = calculaTempo(movimentacao);
+        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
+        int calculaTempo = calculaTempo(movimentacao);
+        int calculatempoCondutor = calculaTempo(movimentacao);
 
         if(tempoMulta % 60 != 0)
             tempoMulta+=60;
@@ -96,13 +118,33 @@ public class MovimentacaoService {
 
 
         calculatempoCondutor += calculatempoCondutor;
-        condutor.setTempototal(calculatempoCondutor);
+        movimentacao.getCondutor().setTempototal(calculatempoCondutor);
+
+
 
         movimentacaoRepository.save(movimentacao);
 
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void delete( @RequestParam("id") final Long id) {
+
+
+         Movimentacao movimentacao = this.movimentacaoRepository.findById(id).orElse(null);
+
+        if(movimentacao == null){
+            throw new RuntimeException("movimentação nula");
+
+        }
+
+        movimentacao.setAtivo(false);
+        movimentacaoRepository.save(movimentacao);
 
 
     }
+
+
 
     private int calculaMulta(final Configuracao configuracao, final Movimentacao movimentacao){
 
@@ -113,7 +155,7 @@ public class MovimentacaoService {
         int minuto = 0;
 
         if (inicioExpediente.isAfter(entrada.toLocalTime())){
-             minuto = ((int) Duration.between(entrada.toLocalTime(),inicioExpediente).getSeconds()) /60;
+            minuto = ((int) Duration.between(entrada.toLocalTime(),inicioExpediente).getSeconds()) /60;
         }
         if (fimExpediente.isBefore(saida.toLocalTime())){
             minuto += ((int) Duration.between(fimExpediente,saida.toLocalTime()).getSeconds()) / 60;
@@ -134,43 +176,6 @@ public class MovimentacaoService {
         return tempo;
 
     }
-
-
-
-    @Transactional(rollbackFor = Exception.class)
-    public void cadastrar(final Movimentacao movimentacao){
-
-        if (movimentacao.getCondutor() == null){
-            throw new RuntimeException(" Condutor inválido");
-        } else if (movimentacao.getVeiculo() == null) {
-            throw new RuntimeException(" Veiculo inválido");
-        } else if (movimentacao.getEntrada() == null) {
-            throw new RuntimeException(" Entrada inválido");
-        } else{
-            movimentacaoRepository.save(movimentacao);
-        }
-
-    }
-
-
-
-    @Transactional(rollbackFor = Exception.class)
-    public void delete( @RequestParam("id") final Long id) {
-
-
-         Movimentacao movimentacao = this.movimentacaoRepository.findById(id).orElse(null);
-
-        if(movimentacao == null){
-            throw new RuntimeException("movimentação nula");
-
-        }else {
-            movimentacao.setAtivo(false);
-            movimentacaoRepository.save(movimentacao);
-        }
-
-    }
-
-
 
 
     
