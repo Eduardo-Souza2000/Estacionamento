@@ -1,9 +1,11 @@
 package br.com.uniametica.estacionamento.service;
 
 import br.com.uniametica.estacionamento.entity.Marca;
+import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.MarcaRepository;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
+import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
 import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class VeiculoService {
     private ModeloRepository modeloRepository;
     @Autowired
     private MarcaRepository marcaRepository;
+    @Autowired
+    private MovimentacaoRepository movimentacaoRepository;
 
 
     public Optional<Veiculo> procurarVeiculo(Long id){
@@ -137,7 +141,7 @@ public class VeiculoService {
 
         Veiculo veiculo = this.veiculoRepository.findById(id).orElse(null);
 
-        if(veiculoRepository.veiculoIdExistentes(veiculo.getId())){
+        if(veiculoRepository.veiculoExistente(veiculo.getId())){
             veiculo.setAtivo(false);
             veiculoRepository.save(veiculo);
         }else {
