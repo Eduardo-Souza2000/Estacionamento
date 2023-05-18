@@ -1,5 +1,6 @@
 package br.com.uniametica.estacionamento.repository;
 import br.com.uniametica.estacionamento.entity.Condutor;
+import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 
 import br.com.uniametica.estacionamento.entity.Veiculo;
@@ -18,6 +19,7 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Long>
 
 
 
-
+    @Query(value = "SELECT c FROM Configuracao c")
+    Configuracao obterConfiguracao();
 
 }

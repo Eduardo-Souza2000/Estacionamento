@@ -68,7 +68,7 @@ public class Movimentacao extends AbstractEntity{
     private BigDecimal valorHora;
 
     @Getter @Setter
-    @Column(name = "valorhoramulta")
+    @Column(name = "valorminutomulta")
     private BigDecimal valorHoraMulta;
 
     @Override
@@ -92,9 +92,9 @@ public class Movimentacao extends AbstractEntity{
                 ("-----------------------------------------------------------------") +
                 ("\n" + "*********  FINANCEIRO  ************************************" + "\n") +
                 ("Valor Por Hora: R$ " + getValorHora() + "\n") +
-                ("Valor por Hora Multa R$ " + getValorHoraMulta() + "\n") +
+                ("Valor por Minuto Multa R$ " + getValorHoraMulta() + "\n") +
                 ("Valor Desconto: R$ " + getValorDesconto() + "\n") +
-                ("Valor da Multa R$ " + getValorMulta() + "\n") +
+                ("Valor da a pagar da Multa R$ " + getValorMulta() + "\n") +
                 ("Valor Total A pagar R$ " + getValorTotal() + "\n");
 
     }

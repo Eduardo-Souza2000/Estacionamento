@@ -126,6 +126,8 @@ public class MovimentacaoService {
     @Transactional(rollbackFor = Exception.class)
     public String finalizarMovimentacao (@RequestParam("id") Long id, Movimentacao movimentacao){
 
+    Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
+
     if(!movimentacaoRepository.ProcuraId(movimentacao.getId())) {
             throw new RuntimeException("FAVOR INSERIR UM ID VALIDO");
     }
@@ -148,9 +150,15 @@ public class MovimentacaoService {
     movimentacao.setTempoTotalminuto(calculaTempo*60);
     movimentacao.setTempoMultaHora(tempoMulta/60);
     movimentacao.setTempoMultaMinuto(tempoMulta);
-    movimentacao.setValorHoraMulta(configuracao.getValorMinutoMulta());
-    movimentacao.setValorHora(configuracao.getValorHora());
 
+
+    movimentacao.setValorHoraMulta(objConfiguracao.getValorMinutoMulta());
+    movimentacao.setValorHora(objConfiguracao.getValorHora());
+
+    movimentacao.setValorMulta(BigDecimal.valueOf((tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
+    movimentacao.setValorTotal(BigDecimal.valueOf((calculaTempo * objConfiguracao.getValorHora().intValue()) +  (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
+
+    //(calculaTempo * objConfiguracao.getValorHora().intValue())
 
     calculatempoCondutor =+ calculatempoCondutor;
     movimentacao.getCondutor().setTempototal(calculatempoCondutor);
@@ -167,7 +175,7 @@ public class MovimentacaoService {
 //    //movimentacao.setValorTotal(BigDecimal.valueOf(movimentacao.getTempoTotalhora() * valorHora + movimentacao.getTempoMultaMinuto() * valorMinutoMulta));
 //    movimentacao.setValorTotal(BigDecimal.valueOf(movimentacao.getTempoTotalhora() + valorHora.intValue()).add(BigDecimal.valueOf(movimentacao.getTempoMultaMinuto() + valorMinutoMulta.intValue())));
 
-    movimentacao.setValorHora(configuracao.getValorHora());
+
 
     movimentacaoRepository.save(movimentacao);
 

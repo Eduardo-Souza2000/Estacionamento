@@ -17,5 +17,5 @@ insert into veiculos (id,ativo,dt_atualizacao,dt_cadastro,ano, cor,placa,  tipo,
 
 
 
-insert into movimentacoes (id,ativo,dt_atualizacao,dt_cadastro,entrada,tempo_total_hora,tempo_total_minuto,saida,  tempodesconto, tempomulta_minuto, tempomulta_hora,valordesconto, valorhora, valorhoramulta, valormulta,valortotal, condutor, veiculo ) Values (1,true,'10-05-2000 10:05:20', '10-05-2000 10:05:20','10-05-2000 10:05:20',0,0,' 10-05-2000 10:05:20', 0,0,0, '000.00', '10.00', '100.00', '10.00', '10.00',1,1);
+insert into movimentacoes (id,ativo,dt_atualizacao,dt_cadastro,entrada,tempo_total_hora,tempo_total_minuto,saida,  tempodesconto, tempomulta_minuto, tempomulta_hora,valordesconto, valorhora, valorminutomulta, valormulta,valortotal, condutor, veiculo ) Values (1,true,'10-05-2000 10:05:20', '10-05-2000 10:05:20','10-05-2000 10:05:20',0,0,' 10-05-2000 10:05:20', 0,0,0, '000.00', '10.00', '100.00', '10.00', '10.00',1,1);
 
