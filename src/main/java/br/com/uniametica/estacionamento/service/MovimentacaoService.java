@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -151,6 +152,11 @@ public String finalizarMovimentacao (@RequestParam("id") Long id, Movimentacao m
     calculatempoCondutor =+ calculatempoCondutor;
     movimentacao.getCondutor().setTempototal(calculatempoCondutor);
 
+    if (movimentacao.getCondutor().getTempototal() > 50){
+        movimentacao.setTempoDesconto((movimentacao.getCondutor().getTempototal()/50) * 5);
+    }
+
+    movimentacao.setValorTotal(movimentacao.getTempoTotalhora() * configuracao.getValorHora().intValue() + movimentacao.getTempoMultaMinuto() * configuracao.getValorMinutoMulta().intValue()));
 
     movimentacaoRepository.save(movimentacao);
 

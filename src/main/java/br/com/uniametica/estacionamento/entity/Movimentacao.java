@@ -36,13 +36,13 @@ public class Movimentacao extends AbstractEntity{
 
     @Getter @Setter
     @Column (name = "tempo_total_minuto")
-    private Integer tempoTotalminuto;
+    private int tempoTotalminuto;
 
 
 
     @Getter @Setter
     @Column(name = "tempodesconto")
-    private LocalTime tempoDesconto;
+    private int tempoDesconto;
 
     @Getter @Setter
     @Column(name = "tempomultaMinuto")
