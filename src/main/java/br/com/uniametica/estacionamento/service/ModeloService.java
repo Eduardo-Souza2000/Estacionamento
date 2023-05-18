@@ -58,6 +58,9 @@ public class ModeloService {
          if(modelo.getMarca() == null){
             throw new RuntimeException("Marca inválido");
         }
+         if (modeloRepository.existente(modelo.getNome())){
+             throw new RuntimeException("Nome Repetido");
+         }
 
 
         modeloRepository.save(modelo);

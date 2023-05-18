@@ -30,8 +30,6 @@ public class Movimentacao extends AbstractEntity{
     @Column(name = "saida")
     private LocalDateTime saida;
 
-
-
     @Getter @Setter
     @Column (name = "tempo_total_hora")
     private Integer tempoTotalhora;
@@ -79,21 +77,23 @@ public class Movimentacao extends AbstractEntity{
 
         return
                 ("Bem Vindo Ao Estacionamento do Semestre" + "\n") +
-                ("-----------------------------------------------------------------") +
-                ("*********  DADOS DO CLIENTE  ************************************") +
-                ("Condutor: " + getCondutor() + "\n") +
-                ("Nome do Veiculo: " + this.getVeiculo() + "\n") +
+                ("--------------------------------------------") +
+                ("\n" + "*********  DADOS DO CLIENTE  ************************************" + "\n") +
+                ("Condutor: " + getCondutor().getNome() + "\n") +
+                ("Veiculo:" + "\n" + "PLACA - " + getVeiculo().getPlaca() +  "\n" +"COR - "+ getVeiculo().getCor()  + "\n" +"TIPO: " + getVeiculo().getTipo() + "\n" +
+                "Ano: " + getVeiculo().getAno() + "\n" + "Modelo: " + getVeiculo().getModelo().getNome() + "\n" + "Marca: " + getVeiculo().getModelo().getMarca().getNome() + "\n") +
                 ("Hora da Entrada: " + getEntrada() + "\n") +
                 ("Hora Saida: " + getSaida() + "\n") +
+                ("Tempo Do Condutor Acumulado: " + getCondutor().getTempototal() + "\n")+
                 ("-----------------------------------------------------------------") +
-                ("*********  TEMPO NO ESTABELECIMENTO  ************************************") +
-                ("Tempo Total estacionado: " + getTempoTotalhora() + ":" + getTempoTotalminuto() + "\n") +
-                ("Tempo Multa  por Tempo Excepente: " + getTempoMultaHora() + ":"  + getTempoMultaMinuto() + "\n") +
+                ("\n"+ "*********  TEMPO NO ESTABELECIMENTO  ************************************"+"\n") +
+                ("Tempo Total estacionado: HORAS:" + getTempoTotalhora() +  "\n" + "Tempo Total estacionado: MINUTOS " + getTempoTotalminuto() + "\n") +
+                ("Tempo Multa  por Tempo Excepente: HORAS: " + getTempoMultaHora() +  "\n" +"Tempo Excepente: MINUTOS:"  + getTempoMultaMinuto() + "\n") +
                 ("Tempo De Desconto: " + getTempoDesconto() + "\n") +
                 ("-----------------------------------------------------------------") +
-                ("*********  FINANCEIRO  ************************************") +
-                ( "Valor Por Hora: R$ " + getValorHora() + "\n") +
-                ( "Valor por Hora Multa R$ " + getValorHoraMulta() + "\n") +
+                ("\n" + "*********  FINANCEIRO  ************************************" + "\n") +
+                ("Valor Por Hora: R$ " + getValorHora() + "\n") +
+                ("Valor por Hora Multa R$ " + getValorHoraMulta() + "\n") +
                 ("Valor Desconto: R$ " + getValorDesconto() + "\n") +
                 ("Valor da Multa R$ " + getValorMulta() + "\n") +
                 ("Valor Total A pagar R$ " + getValorTotal() + "\n");

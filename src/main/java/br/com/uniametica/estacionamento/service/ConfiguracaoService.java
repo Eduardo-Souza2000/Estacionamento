@@ -39,6 +39,9 @@ public class ConfiguracaoService {
         if (configuracaobanco == null || !configuracao.getId().equals(configuracaobanco.getId())) {
             throw new RuntimeException("Não foi possivel identificar o registro informado");
         }
+        if (configuracao.getId() == null){
+            throw new RuntimeException(" ID Nulo");
+        }
         if (configuracao.getFimExpediente() == null){
             throw new RuntimeException(" Fim do expediente inválido");
         }

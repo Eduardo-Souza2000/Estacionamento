@@ -31,7 +31,8 @@ public class MovimentacaoService {
     private CondutorRepository condutorRepository;
 
     private Condutor condutor;
-
+    private Movimentacao movimentacao;
+    private Configuracao configuracao;
 
     public Optional<Movimentacao> procuraMovimentacao(Long id){
 
@@ -99,30 +100,7 @@ public class MovimentacaoService {
             throw new RuntimeException(" Entrada inválido");
         }
 
-
-
-        int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
-        int calculaTempo = calculaTempo(movimentacao);
-        int calculatempoCondutor = calculaTempo(movimentacao);
-
-        if(tempoMulta % 60 != 0)
-            tempoMulta+=60;
-
-
-        movimentacao.setTempoMultaHora(tempoMulta/60);
-        movimentacao.setTempoMultaMinuto(tempoMulta);
-
-        movimentacao.setTempoTotalhora(calculaTempo);
-        movimentacao.setTempoTotalminuto(calculaTempo*60);
-
-
-
-        calculatempoCondutor += calculatempoCondutor;
-        movimentacao.getCondutor().setTempototal(calculatempoCondutor);
-
-
         movimentacaoRepository.save(movimentacao);
-
     }
 
 
@@ -134,7 +112,6 @@ public class MovimentacaoService {
 
         if(movimentacao == null){
             throw new RuntimeException("movimentação nula");
-
         }
 
         movimentacao.setAtivo(false);
@@ -144,6 +121,43 @@ public class MovimentacaoService {
     }
 
 
+@Transactional(rollbackFor = Exception.class)
+public String finalizarMovimentacao (@RequestParam("id") Long id, Movimentacao movimentacao){
+
+    if(!movimentacaoRepository.ProcuraId(movimentacao.getId())) {
+            throw new RuntimeException("FAVOR INSERIR UM ID VALIDO");
+    }
+
+    if(movimentacao.getSaida() == null){
+            throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
+    }
+
+
+    int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
+    int calculaTempo = calculaTempo(movimentacao);
+    int calculatempoCondutor = calculaTempo(movimentacao);
+
+    if(tempoMulta % 60 != 0)
+        tempoMulta+=60;
+
+
+
+    movimentacao.setTempoTotalhora(calculaTempo);
+    movimentacao.setTempoTotalminuto(calculaTempo*60);
+    movimentacao.setTempoMultaHora(tempoMulta/60);
+    movimentacao.setTempoMultaMinuto(tempoMulta);
+
+
+    calculatempoCondutor =+ calculatempoCondutor;
+    movimentacao.getCondutor().setTempototal(calculatempoCondutor);
+
+
+    movimentacaoRepository.save(movimentacao);
+
+    return movimentacao.toString();
+}
+
+
 
     private int calculaMulta(final Configuracao configuracao, final Movimentacao movimentacao){
 
@@ -151,16 +165,36 @@ public class MovimentacaoService {
         LocalDateTime saida = movimentacao.getSaida();
         LocalTime inicioExpediente = configuracao.getInicioExpediente();
         LocalTime fimExpediente = configuracao.getFimExpediente();
-        int minuto = 0;
+        int multa = 0;
+        int AnoEntrada = entrada.getYear();
+        int saidaAno = saida.getYear();
+        int totalDias = 0;
 
-        if (inicioExpediente.isAfter(entrada.toLocalTime())){
-            minuto = ((int) Duration.between(entrada.toLocalTime(),inicioExpediente).getSeconds()) /60;
+        if(AnoEntrada != saidaAno){
+            totalDias += saidaAno - AnoEntrada;
+        } else{
+            totalDias += saida.getDayOfYear() - entrada.getDayOfYear();
         }
-        if (fimExpediente.isBefore(saida.toLocalTime())){
-            minuto += ((int) Duration.between(fimExpediente,saida.toLocalTime()).getSeconds()) / 60;
+        if (entrada.toLocalTime().isBefore(inicioExpediente)){
+        //if (  inicioExpediente.isAfter(entrada.toLocalTime())){
+            multa += ((int) Duration.between(entrada.toLocalTime(),inicioExpediente).getSeconds()) /3600;
+        }
+        if(saida.toLocalTime().isBefore(fimExpediente))
+        //if (fimExpediente.isBefore(saida.toLocalTime()))
+        {
+            multa += ((int) Duration.between(fimExpediente,saida.toLocalTime()).getSeconds()) / 3600;
+        }
+        if (totalDias > 0){
+            int diferenca = ((int) Duration.between(inicioExpediente, fimExpediente).getSeconds()/60);
+            multa +=   (totalDias * 24 * 60 ) - (diferenca);
+            // multa =   (totalDias * 24 * 60 ); //- (diferenca * totalDias);
+            //multa =    (diferenca * totalDias * 60);
+            //multa = totalDias;
+            //multa = diferenca;
         }
 
-        return minuto;
+
+        return multa;
     }
 
     public int calculaTempo (final Movimentacao movimentacao){
@@ -169,7 +203,6 @@ public class MovimentacaoService {
         LocalDateTime tempoSaida = movimentacao.getSaida();
 
         tempo =  (int)  Duration.between(tempoEntrada,tempoSaida).getSeconds()/3600;
-
 
 
         return tempo;
