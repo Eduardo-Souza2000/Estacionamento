@@ -39,7 +39,6 @@ public class Movimentacao extends AbstractEntity{
     private int tempoTotalminuto;
 
 
-
     @Getter @Setter
     @Column(name = "tempodesconto")
     private int tempoDesconto;
@@ -88,7 +87,7 @@ public class Movimentacao extends AbstractEntity{
                 ("-----------------------------------------------------------------") +
                 ("\n"+ "*********  TEMPO NO ESTABELECIMENTO  ************************************"+"\n") +
                 ("Tempo Total estacionado: HORAS:" + getTempoTotalhora() +  "\n" + "Tempo Total estacionado: MINUTOS " + getTempoTotalminuto() + "\n") +
-                ("Tempo Multa  por Tempo Excepente: HORAS: " + getTempoMultaHora() +  "\n" +"Tempo Excepente: MINUTOS:"  + getTempoMultaMinuto() + "\n") +
+                ("Tempo Multa  por Tempo Excedente: HORAS: " + getTempoMultaHora() +  "\n"+"Tempo Excepente: MINUTOS:"  + getTempoMultaMinuto() + "\n") +
                 ("Tempo De Desconto: " + getTempoDesconto() + "\n") +
                 ("-----------------------------------------------------------------") +
                 ("\n" + "*********  FINANCEIRO  ************************************" + "\n") +
@@ -99,8 +98,6 @@ public class Movimentacao extends AbstractEntity{
                 ("Valor Total A pagar R$ " + getValorTotal() + "\n");
 
     }
-
-
-
-
 }
+
+
