@@ -22,4 +22,7 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Long>
     @Query(value = "SELECT c FROM Configuracao c")
     Configuracao obterConfiguracao();
 
+//    @Query(value = "SELECT * FROM condutores where id = :id")
+//    Condutor obterCondutor();
+
 }

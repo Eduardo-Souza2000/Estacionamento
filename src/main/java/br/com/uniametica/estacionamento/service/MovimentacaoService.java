@@ -4,9 +4,7 @@ import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
-import br.com.uniametica.estacionamento.repository.CondutorRepository;
-import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
-import br.com.uniametica.estacionamento.repository.MovimentacaoRepository;
+import br.com.uniametica.estacionamento.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +31,15 @@ public class MovimentacaoService {
     @Autowired
     private CondutorRepository condutorRepository;
 
-    private Condutor condutor;
     private Movimentacao movimentacao;
     private Configuracao configuracao;
+    private Condutor condutor;
+    @Autowired
+    private MarcaRepository marcaRepository;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
+    @Autowired
+    private ModeloRepository modeloRepository;
 
     public Optional<Movimentacao> procuraMovimentacao(Long id){
 
@@ -128,13 +133,33 @@ public class MovimentacaoService {
 
     Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
 
+
+    //Condutor objCondutor = movimentacaoRepository.obterCondutor();
+
+    //CHEGAGENS
     if(!movimentacaoRepository.ProcuraId(movimentacao.getId())) {
             throw new RuntimeException("FAVOR INSERIR UM ID VALIDO");
     }
-
     if(movimentacao.getSaida() == null){
             throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
     }
+    if (movimentacao.getCondutor() == null){
+        throw new RuntimeException("Condutor Nulo");
+    }
+    if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
+        throw new RuntimeException("Veiculo Não Existe No Banco de Dados");
+    }
+    if(!modeloRepository.modeloExistente(movimentacao.getVeiculo().getModelo().getId())){
+        throw new RuntimeException("Modelo Não Existe No Banco de Dados");
+    }
+    if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
+        throw new RuntimeException("Marca Não Existe No Banco de Dados");
+    }
+    if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
+        throw new RuntimeException("Condutor Não Existe No Banco de Dados");
+    }
+
+
 
 
     int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
@@ -160,12 +185,19 @@ public class MovimentacaoService {
 
     //(calculaTempo * objConfiguracao.getValorHora().intValue())
 
-    calculatempoCondutor =+ calculatempoCondutor;
-    movimentacao.getCondutor().setTempototal(calculatempoCondutor);
+//    calculatempoCondutor =+ calculatempoCondutor;
+//    movimentacao.getCondutor().setTempototal(calculatempoCondutor);
+//
+//   objCondutor.setTempototal(calculatempoCondutor);
 
+
+
+
+    //TEMPO DE DESCONTO
     if (movimentacao.getCondutor().getTempototal() > 50){
         movimentacao.setTempoDesconto((movimentacao.getCondutor().getTempototal()/50) * 5);
     }
+
 
 
 
@@ -177,10 +209,32 @@ public class MovimentacaoService {
 
 
 
+
+
+
+    // Atualizar o tempo total do condutor
+    //Recebe o valor que tem no banco atual do condutor
+    //soma com o valor do tempo da movimentaçao
+    //Salva dentro do banco novamente com o tempo atualizado
+    //condutor = movimentacao.getCondutor();
+    int condutorExistente = Math.toIntExact(movimentacao.getCondutor().getId());
+    Condutor condutorBanco = condutorRepository.getById((long) condutorExistente);
+    int tempoNovo = condutorBanco.getTempototal() + calculatempoCondutor;
+    condutorBanco.setTempototal(tempoNovo);
+    condutorRepository.save(condutorBanco);
+
+    movimentacao.getCondutor().setTempototal(condutorBanco.getTempototal());
+
+
+
     movimentacaoRepository.save(movimentacao);
+
 
     return movimentacao.toString();
 }
+
+
+
 
 
 
