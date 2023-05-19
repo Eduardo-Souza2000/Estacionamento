@@ -143,6 +143,12 @@ public class MovimentacaoService {
     if(movimentacao.getSaida() == null){
             throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
     }
+    if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
+        throw new RuntimeException(" A entrada deve ser antes da saida");
+    }
+    if (movimentacao.getSaida() != null && movimentacao.getSaida().isAfter(movimentacao.getEntrada())){
+        throw new RuntimeException(" A Saida deve ser depois da Entrada");
+    }
     if (movimentacao.getCondutor() == null){
         throw new RuntimeException("Condutor Nulo");
     }
@@ -155,16 +161,21 @@ public class MovimentacaoService {
     if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
         throw new RuntimeException("Marca Não Existe No Banco de Dados");
     }
+    if (marcaRepository.NomeMarcaExistente(String.valueOf(movimentacao.getVeiculo().getModelo().getMarca().getNome().matches("[a-zA-Z]{2,50}")))){
+        throw new RuntimeException("Nome da Marca Invalido");
+    }
     if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
         throw new RuntimeException("Condutor Não Existe No Banco de Dados");
     }
 
 
 
+    //TEMPO DENTRO DO ESTACIONAMENTO
 
     int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)),movimentacao);
     int calculaTempo = calculaTempo(movimentacao);
     int calculatempoCondutor = calculaTempo(movimentacao);
+    LocalDateTime horaAtual = LocalDateTime.now();
 
     // if(tempoMulta % 60 != 0)
     //     tempoMulta+=60;
@@ -179,6 +190,9 @@ public class MovimentacaoService {
 
     movimentacao.setValorHoraMulta(objConfiguracao.getValorMinutoMulta());
     movimentacao.setValorHora(objConfiguracao.getValorHora());
+    movimentacao.setHoraAtual(horaAtual);
+
+
 
     movimentacao.setValorMulta(BigDecimal.valueOf((tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
     movimentacao.setValorTotal(BigDecimal.valueOf((calculaTempo * objConfiguracao.getValorHora().intValue()) +  (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
@@ -201,26 +215,46 @@ public class MovimentacaoService {
 
 
 
+                                     //TEMPO DO CONDUTOR DO ESTACIONAMENTO
 
-    // Atualizar o tempo total do condutor
-    //Recebe o valor que tem no banco atual do condutor
-    //soma com o valor do tempo da movimentaçao
-    //Salva dentro do banco novamente com o tempo atualizado
-    //condutor = movimentacao.getCondutor();
+    //CONVERTE UM VALOR LONG EM INT
     int condutorExistente = Math.toIntExact(movimentacao.getCondutor().getId());
+
+    //PESQUISA O NUMERO DO ID CONFORME FOI PASSADO ANTERIORMENTE
     Condutor condutorBanco = condutorRepository.getById((long) condutorExistente);
+
+    //CALCULO DO TEMPO ELE PUXA O TEMPO TOTAL DO BANCO + CALCULO DO RETORNO DE CALCULA TEMPO CONDUTOR
     int tempoNovo = condutorBanco.getTempototal() + calculatempoCondutor;
+
+    //CALCULO DO TEMPO ELE PUXA O TEMPO TOTAL DO BANCO + CALCULO DO RETORNO DE CALCULA TEMPO CONDUTOR
+    int tempoNovoPago = condutorBanco.getTempoPago() + calculatempoCondutor;
+
     condutorBanco.setTempototal(tempoNovo);
-    condutorRepository.save(condutorBanco);
+
+    condutorBanco.setTempoPago(tempoNovoPago);
 
     movimentacao.getCondutor().setTempototal(condutorBanco.getTempototal());
 
-    //TEMPO DE DESCONTO
-    if (condutorBanco.getTempototal() > 50){
-        movimentacao.setTempoDesconto((condutorBanco.getTempototal()/50) * 5);
+
+                                    //TEMPO DE DESCONTO
+
+    if (condutorBanco.getTempoPago() > 50){
+    //CALCULA O VALOR DO DESCONTO
+    condutorBanco.setTempoDesconto((condutorBanco.getTempoPago()/50*5) + condutorBanco.getTempoDesconto());
+
+    //CALCULA O TANTO QUE SOBROU DO CONDUTOR PARA DEIXAR ARMAZENADO PARA AS PROXIMAS 50 HORAS PARA DESCONTO
+    condutorBanco.setTempoPago(condutorBanco.getTempoPago() % 50);
+
+
     }
 
+    condutorRepository.save(condutorBanco);
+
+    movimentacao.getCondutor().setTempoDesconto(condutorBanco.getTempoDesconto());
+    movimentacao.getCondutor().setTempoPago(condutorBanco.getTempoPago());
+
     movimentacaoRepository.save(movimentacao);
+
 
 
     return movimentacao.toString();

@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
 
@@ -29,12 +28,17 @@ public class Condutor extends AbstractEntity {
     private String telefone;
     @Getter @Setter
     @Column(name = "tempogasto")
-    private LocalTime tempoPago;
+    private int tempoPago;
     @Getter @Setter
     @Column(name = "tempototal")
     private int tempototal;
+
+//    @Getter @Setter
+//    @Column(name = "tempodesconto")
+//    private LocalTime tempoDesconto;
+
     @Getter @Setter
     @Column(name = "tempodesconto")
-    private LocalTime tempoDesconto;
+    private int tempoDesconto;
 
 }

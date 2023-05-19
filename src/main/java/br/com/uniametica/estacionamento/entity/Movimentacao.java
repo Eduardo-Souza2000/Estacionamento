@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 //Referencia de tabela
@@ -21,6 +22,10 @@ public class Movimentacao extends AbstractEntity{
     @JoinColumn (name = "condutor", nullable = false)
     @ManyToOne
     private Condutor condutor;
+
+    @Getter @Setter
+    @Column(name = "hora", nullable = false)
+    private LocalDateTime horaAtual;
 
     @Getter @Setter
     @Column(name = "entrada", nullable = false)
@@ -76,6 +81,7 @@ public class Movimentacao extends AbstractEntity{
 
         return
                 ("Bem Vindo Ao Estacionamento do Semestre" + "\n") +
+                ("Hora Atual: " + getHoraAtual() + "\n") +
                 ("--------------------------------------------") +
                 ("\n" + "*********  DADOS DO CLIENTE  ************************************" + "\n") +
                 ("Condutor: " + getCondutor().getNome() + "\n") +
@@ -83,7 +89,9 @@ public class Movimentacao extends AbstractEntity{
                 "Ano: " + getVeiculo().getAno() + "\n" + "Modelo: " + getVeiculo().getModelo().getNome() + "\n" + "Marca: " + getVeiculo().getModelo().getMarca().getNome() + "\n") +
                 ("Hora da Entrada: " + getEntrada() + "\n") +
                 ("Hora Saida: " + getSaida() + "\n") +
-                ("Tempo Do Condutor Acumulado: " + getCondutor().getTempototal() + "\n")+
+                ("Tempo total do condutor em suas movimentaçoes: " + getCondutor().getTempototal() + "Horas" +"\n")+
+                ("Tempo do Condutor Desconto: " + getCondutor().getTempoDesconto() + "Horas" + "\n")+
+                ("Tempo Acumulado para o proximo desconto: " + getCondutor().getTempoPago() + "Horas" + "\n") +
                 ("-----------------------------------------------------------------") +
                 ("\n"+ "*********  TEMPO NO ESTABELECIMENTO  ************************************"+"\n") +
                 ("Tempo Total estacionado: HORAS:" + getTempoTotalhora() +  "\n" + "Tempo Total estacionado: MINUTOS " + getTempoTotalminuto() + "\n") +
