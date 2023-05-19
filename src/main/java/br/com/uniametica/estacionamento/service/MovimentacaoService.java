@@ -191,16 +191,6 @@ public class MovimentacaoService {
 //   objCondutor.setTempototal(calculatempoCondutor);
 
 
-
-
-    //TEMPO DE DESCONTO
-    if (movimentacao.getCondutor().getTempototal() > 50){
-        movimentacao.setTempoDesconto((movimentacao.getCondutor().getTempototal()/50) * 5);
-    }
-
-
-
-
 //    BigDecimal valorHora = configuracaoRepository.getReferenceById(id).getValorHora();
 //    BigDecimal valorMinutoMulta = configuracaoRepository.getReferenceById(id).getValorMinutoMulta();
 
@@ -225,7 +215,10 @@ public class MovimentacaoService {
 
     movimentacao.getCondutor().setTempototal(condutorBanco.getTempototal());
 
-
+    //TEMPO DE DESCONTO
+    if (condutorBanco.getTempototal() > 50){
+        movimentacao.setTempoDesconto((condutorBanco.getTempototal()/50) * 5);
+    }
 
     movimentacaoRepository.save(movimentacao);
 
