@@ -146,9 +146,6 @@ public class MovimentacaoService {
     if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
         throw new RuntimeException(" A entrada deve ser antes da saida");
     }
-    if (movimentacao.getSaida() != null && movimentacao.getSaida().isAfter(movimentacao.getEntrada())){
-        throw new RuntimeException(" A Saida deve ser depois da Entrada");
-    }
     if (movimentacao.getCondutor() == null){
         throw new RuntimeException("Condutor Nulo");
     }
