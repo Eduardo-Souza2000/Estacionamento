@@ -94,16 +94,17 @@ public class Movimentacao extends AbstractEntity{
                 ("Tempo Acumulado para o proximo desconto: " + getCondutor().getTempoPago() + "Horas" + "\n") +
                 ("-----------------------------------------------------------------") +
                 ("\n"+ "*********  TEMPO NO ESTABELECIMENTO  ************************************"+"\n") +
-                ("Tempo Total estacionado: HORAS:" + getTempoTotalhora() +  "\n" + "Tempo Total estacionado: MINUTOS " + getTempoTotalminuto() + "\n") +
-                ("Tempo Multa  por Tempo Excedente: HORAS: " + getTempoMultaHora() +  "\n"+"Tempo Excepente: MINUTOS:"  + getTempoMultaMinuto() + "\n") +
-                ("Tempo De Desconto: " + getTempoDesconto() + "\n") +
+                ("Tempo Total estacionado: HORAS:" + getTempoTotalhora()+ " Horas" +  "\n" + "Tempo Total estacionado:" + getTempoTotalminuto() + " Minutos"+ "\n") +
+                ("Tempo Multa  por Tempo Excedente: HORAS: " + getTempoMultaHora() +  "\n"+"Tempo Excepente:"  + getTempoMultaMinuto() + " Minutos" +"\n") +
+                ("Tempo De Desconto: " + getTempoDesconto() + " Horas" +"\n") +
                 ("-----------------------------------------------------------------") +
                 ("\n" + "*********  FINANCEIRO  ************************************" + "\n") +
                 ("Valor Por Hora: R$ " + getValorHora() + "\n") +
                 ("Valor por Minuto Multa R$ " + getValorHoraMulta() + "\n") +
-                ("Valor Desconto: R$ " + getValorDesconto() + "\n") +
-                ("Valor da a pagar da Multa R$ " + getValorMulta() + "\n") +
-                ("Valor Total A pagar R$ " + getValorTotal() + "\n");
+                ("Valor Desconto: R$ " + "-" + getValorDesconto() + "\n") +
+                ("Valor a pagar da Multa R$ " + getValorMulta() + "\n") +
+                ("Valor a pagar por tempo Estacionado dentro do Horário (sem multa) R$ " + (getTempoTotalhora().intValue() - getTempoMultaHora() ) * getValorHora().intValue() + "\n") +
+                ("Valor Total A pagar  R$ " + getValorTotal() + "\n");
 
     }
 }

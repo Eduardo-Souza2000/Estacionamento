@@ -171,8 +171,6 @@ public class MovimentacaoService {
         int calculatempoCondutor = calculaTempo(movimentacao);
         LocalDateTime horaAtual = LocalDateTime.now();
 
-        // if(tempoMulta % 60 != 0)
-        //     tempoMulta+=60;
 
 
         movimentacao.setTempoTotalhora(calculaTempo);
@@ -187,7 +185,6 @@ public class MovimentacaoService {
 
 
         movimentacao.setValorMulta(BigDecimal.valueOf((tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
-        movimentacao.setValorTotal(BigDecimal.valueOf((calculaTempo * objConfiguracao.getValorHora().intValue()) + (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue())));
 
         //(calculaTempo * objConfiguracao.getValorHora().intValue())
 
@@ -204,7 +201,7 @@ public class MovimentacaoService {
 //    movimentacao.setValorTotal(BigDecimal.valueOf(movimentacao.getTempoTotalhora() + valorHora.intValue()).add(BigDecimal.valueOf(movimentacao.getTempoMultaMinuto() + valorMinutoMulta.intValue())));
 
 
-        //TEMPO DO CONDUTOR DO ESTACIONAMENTO
+                                            //TEMPO DO CONDUTOR DO ESTACIONAMENTO
 
         //CONVERTE UM VALOR LONG EM INT
         int condutorExistente = Math.toIntExact(movimentacao.getCondutor().getId());
@@ -219,13 +216,16 @@ public class MovimentacaoService {
         int tempoNovoPago = condutorBanco.getTempoPago() + calculatempoCondutor;
 
         condutorBanco.setTempototal(tempoNovo);
-
         condutorBanco.setTempoPago(tempoNovoPago);
-
         movimentacao.getCondutor().setTempototal(condutorBanco.getTempototal());
 
 
-        //TEMPO DE DESCONTO
+                                                    //TEMPO DE DESCONTO
+
+        if(condutorBanco.getTempoDesconto() >= 5) {
+            condutorBanco.setTempoDesconto(0);
+            movimentacao.getCondutor().setTempoDesconto(condutorBanco.getTempoDesconto());
+        }
 
         if (condutorBanco.getTempoPago() > 50) {
             //CALCULA O VALOR DO DESCONTO
@@ -233,22 +233,22 @@ public class MovimentacaoService {
 
             //CALCULA O TANTO QUE SOBROU DO CONDUTOR PARA DEIXAR ARMAZENADO PARA AS PROXIMAS 50 HORAS PARA DESCONTO
             condutorBanco.setTempoPago(condutorBanco.getTempoPago() % 50);
-
-           // int valorTotalDesconto = calculaTempoComDesconto(movimentacao,configuracao);
-
-            movimentacao.setValorTotal(BigDecimal.valueOf((calculaTempo * objConfiguracao.getValorHora().intValue()) + (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue()) ));//- condutorBanco.getTempoDesconto()));
-
         }
 
-        condutorRepository.save(condutorBanco);
 
-
+        movimentacao.setValorDesconto(BigDecimal.valueOf(condutorBanco.getTempoDesconto() * objConfiguracao.getValorHora().intValue()));
         movimentacao.getCondutor().setTempoDesconto(condutorBanco.getTempoDesconto());
         movimentacao.getCondutor().setTempoPago(condutorBanco.getTempoPago());
         movimentacao.setTempoDesconto(condutorBanco.getTempoDesconto());
 
+        movimentacao.setValorTotal(BigDecimal.valueOf(( calculaTempo - (tempoMulta/60)) * objConfiguracao.getValorHora().intValue() + (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue()) - (movimentacao.getTempoDesconto() * objConfiguracao.getValorHora().intValue())));
 
-        movimentacaoRepository.save(movimentacao);
+
+
+
+    condutorRepository.save(condutorBanco);
+
+    movimentacaoRepository.save(movimentacao);
 
 
     }
