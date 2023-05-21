@@ -73,21 +73,34 @@ public class MovimentacaoService {
 
         final Movimentacao  movimantacaobanco = this.movimentacaoRepository.findById(id).orElse(null);
 
-        if (movimantacaobanco == null || !movimentacao.getId().equals(movimantacaobanco.getId())) {
-            throw new RuntimeException("Não foi possivel identificar o registro informado");
-        }
-        if (movimentacao.getCondutor() == null){
-            throw new RuntimeException(" Condutor inválido");
-        }
-        if (movimentacao.getVeiculo() == null) {
-            throw new RuntimeException(" Veiculo inválido");
-        }
-        if (movimentacao.getEntrada() == null) {
-            throw new RuntimeException(" Entrada inválido");
+        if(!movimentacaoRepository.ProcuraId(movimentacao.getId())) {
+            throw new RuntimeException("FAVOR INSERIR UMA MOVIMENTAÇÃO VÁLIDA");
+        }else if(movimentacao.getSaida() == null){
+            throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
+        }else if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
+            throw new RuntimeException(" A entrada deve ser antes da saida");
+        }else if (movimentacao.getCondutor() == null){
+            throw new RuntimeException("Condutor Nulo");
+        }else if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
+            throw new RuntimeException("Veiculo Não Existe No Banco de Dados");
+        }else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null){
+            throw new RuntimeException("Veiculo já está estacionado.");
+        } else if (!veiculoRepository.getById(movimentacao.getVeiculo().getId()).isAtivo()) {
+            throw new RuntimeException("Veiculo inativo");
+        }else if(!modeloRepository.modeloExistente(movimentacao.getVeiculo().getModelo().getId())){
+            throw new RuntimeException("Modelo Não Existe No Banco de Dados");
+        }else if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
+            throw new RuntimeException("Marca Não Existe No Banco de Dados");
+        } else if (marcaRepository.NomeMarcaExistente(String.valueOf(movimentacao.getVeiculo().getModelo().getMarca().getNome().matches("[a-zA-Z]{2,50}")))){
+            throw new RuntimeException("Nome da Marca Invalido");
+        } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
+            throw new RuntimeException("Condutor Não Existe No Banco de Dados");
+        } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
+            throw new RuntimeException("Condutor inativo.");
+        } else{
+            movimentacaoRepository.save(movimentacao);
         }
 
-
-        movimentacaoRepository.save(movimentacao);
     }
 
 
@@ -98,16 +111,26 @@ public class MovimentacaoService {
     public void cadastrar(final Movimentacao movimentacao){
 
         if (movimentacao.getCondutor() == null){
-            throw new RuntimeException(" Condutor inválido");
+            throw new RuntimeException("Condutor Nulo");
+        }else if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
+            throw new RuntimeException("Veiculo Não Existe No Banco de Dados");
+        }else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null){
+            throw new RuntimeException("Veiculo já está estacionado.");
+        } else if (!veiculoRepository.getById(movimentacao.getVeiculo().getId()).isAtivo()) {
+            throw new RuntimeException("Veiculo inativo");
+        }else if(!modeloRepository.modeloExistente(movimentacao.getVeiculo().getModelo().getId())){
+            throw new RuntimeException("Modelo Não Existe No Banco de Dados");
+        }else if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
+            throw new RuntimeException("Marca Não Existe No Banco de Dados");
+        } else if (marcaRepository.NomeMarcaExistente(String.valueOf(movimentacao.getVeiculo().getModelo().getMarca().getNome().matches("[a-zA-Z]{2,50}")))){
+            throw new RuntimeException("Nome da Marca Invalido");
+        } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
+            throw new RuntimeException("Condutor Não Existe No Banco de Dados");
+        } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
+            throw new RuntimeException("Condutor inativo.");
+        }else {
+            movimentacaoRepository.save(movimentacao);
         }
-        if (movimentacao.getVeiculo() == null) {
-            throw new RuntimeException(" Veiculo inválido");
-        }
-        if (movimentacao.getEntrada() == null) {
-            throw new RuntimeException(" Entrada inválido");
-        }
-
-        movimentacaoRepository.save(movimentacao);
     }
 
 
