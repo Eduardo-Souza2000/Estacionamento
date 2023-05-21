@@ -122,13 +122,17 @@ public class MovimentacaoService {
             throw new RuntimeException("Modelo Não Existe No Banco de Dados");
         }else if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
             throw new RuntimeException("Marca Não Existe No Banco de Dados");
-        } else if (marcaRepository.NomeMarcaExistente(String.valueOf(movimentacao.getVeiculo().getModelo().getMarca().getNome().matches("[a-zA-Z]{2,50}")))){
-            throw new RuntimeException("Nome da Marca Invalido");
-        } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
+        }  else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
             throw new RuntimeException("Condutor Não Existe No Banco de Dados");
         } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
             throw new RuntimeException("Condutor inativo.");
-        }else {
+        } else if (movimentacao.getEntrada() == null) {
+            throw new RuntimeException("Data de Entrada Nula.");
+        } else if (movimentacao.getSaida() == null) {
+            throw new RuntimeException("Data de Saida Nula.");
+        } else if (movimentacao.getHoraAtual() == null) {
+            throw new RuntimeException("Hora Atual Nula.");
+        } else {
             movimentacaoRepository.save(movimentacao);
         }
     }
