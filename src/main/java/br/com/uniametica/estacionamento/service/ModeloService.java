@@ -52,7 +52,7 @@ public class ModeloService {
     public void cadastrarModelo(final Modelo modelo){
 
 
-        if (!modelo.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
+        if (!modelo.getNome().matches("^[a-zA-Z0-1]{1}[a-zA-Z0-1\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido favor verificar como escreveu o nome se esta correto");
         }
          if(modelo.getMarca() == null){

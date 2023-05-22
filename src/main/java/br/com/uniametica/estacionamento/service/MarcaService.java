@@ -3,6 +3,9 @@ package br.com.uniametica.estacionamento.service;
 import br.com.uniametica.estacionamento.entity.Marca;
 import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.repository.MarcaRepository;
+import br.com.uniametica.estacionamento.repository.ModeloRepository;
+import br.com.uniametica.estacionamento.repository.VeiculoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,11 @@ import java.util.Optional;
 public class MarcaService {
     @Autowired
     private MarcaRepository marcaRepository;
+    private Modelo modelo;
+    @Autowired
+    private ModeloRepository modeloRepository;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
     public Optional<Marca> procurar(Long id){
 
@@ -45,19 +53,20 @@ public class MarcaService {
     @Transactional(rollbackFor = Exception.class)
     public void editar(@RequestParam("id")  Long id, @RequestBody  Marca marca) {
 
-        final Marca marcabanco = this.marcaRepository.findById(id).orElse(null);
-
-        if (marcabanco == null || !marca.getId().equals(marcabanco.getId())) {
-            throw new RuntimeException("Não foi possivel identificar o registro informado");
-        }
-        if (!marca.getNome().matches("[a-zA-Z]{2,50}")){
+        final Marca marcabanco = this.marcaRepository.findById(id).orElseThrow(()-> {
+            throw new EntityNotFoundException("Nao foi encontrado o ID no Banco");
+        });
+        if (!marca.getId().equals(id)){
+            throw new RuntimeException("Não foi possivel identificar o registro informado pois o ID não confere");
+        } else if (!marcaRepository.idExistente(id)) {
+            throw new RuntimeException(" Id da Marca Não existe");
+        }else if (!marca.getNome().matches("[a-zA-Z]{2,50}")){
             throw new RuntimeException("Nome inválido");
+        }else if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
+            throw new RuntimeException("Marca já existe");
+        }else {
+            marcaRepository.save(marca);
         }
-        if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
-            throw new RuntimeException("Nome Repetido");
-        }
-
-        marcaRepository.save(marca);
 
     }
 
@@ -65,28 +74,29 @@ public class MarcaService {
     public void cadastrarMarca( Marca marca){
 
         if(marca.getNome() == null) {
+            throw new RuntimeException("Nome Nulo");
+        }else if (!marca.getNome().matches("[a-zA-Z]{2,50}")){
             throw new RuntimeException("Nome inválido");
+        }else if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
+            throw new RuntimeException("Marca já existe");
+        }else {
+            marcaRepository.save(marca);
         }
-        if (marcaRepository.marcaIdExistentes(marca.getId())) {
-            throw new RuntimeException(" Id da Marca já existe");
-        }
-        if (marcaRepository.NomeMarcaExistente(marca.getNome())) {
-            throw new RuntimeException(" Nome da Marca já existe");
-        }
-
-        marcaRepository.save(marca);
 
     }
 
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete( @RequestParam("id") final Long id) {
-
+    public void delete( @RequestParam("id")  Long id) {
 
         Marca marca = this.marcaRepository.findById(id).orElse(null);
 
-        if(marcaRepository.marcaIdExistentes(marca.getId())){
+        if(id == null){
+            throw new RuntimeException(" Id da Marca Invalido");
+        } else if (!marcaRepository.idExistente(id)) {
+            throw new RuntimeException(" Marca nao existe no banco");
+        } else if(marcaRepository.marcaIdExistentes(id)){
             marca.setAtivo(false);
             marcaRepository.save(marca);
         }else {

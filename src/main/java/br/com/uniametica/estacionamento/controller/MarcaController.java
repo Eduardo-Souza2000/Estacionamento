@@ -86,8 +86,8 @@ public class MarcaController {
             this.marcaService.delete(id);
             return ResponseEntity.ok("Registro Alterado com sucesso");
 
-        } catch (DataIntegrityViolationException e){
-            return ResponseEntity.internalServerError().body("Error" + e.getCause().getCause().getMessage());
+        } catch (RuntimeException e){
+            return ResponseEntity.internalServerError().body("ERROR" + e.getMessage());
         }
 
     }
