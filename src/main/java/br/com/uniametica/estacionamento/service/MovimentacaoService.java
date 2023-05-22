@@ -128,10 +128,6 @@ public class MovimentacaoService {
             throw new RuntimeException("Condutor inativo.");
         } else if (movimentacao.getEntrada() == null) {
             throw new RuntimeException("Data de Entrada Nula.");
-        } else if (movimentacao.getSaida() == null) {
-            throw new RuntimeException("Data de Saida Nula.");
-        } else if (movimentacao.getHoraAtual() == null) {
-            throw new RuntimeException("Hora Atual Nula.");
         } else {
             movimentacaoRepository.save(movimentacao);
         }

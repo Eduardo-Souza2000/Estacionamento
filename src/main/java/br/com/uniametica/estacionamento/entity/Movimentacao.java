@@ -24,7 +24,7 @@ public class Movimentacao extends AbstractEntity{
     private Condutor condutor;
 
     @Getter @Setter
-    @Column(name = "hora", nullable = false)
+    @Column(name = "hora")
     private LocalDateTime horaAtual;
 
     @Getter @Setter

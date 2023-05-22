@@ -30,11 +30,14 @@ public class VeiculoService {
     private MovimentacaoRepository movimentacaoRepository;
 
 
-    public Optional<Veiculo> procurarVeiculo(Long id){
+
+
+
+    public Optional<Veiculo> procurarVeiculo(long id){
 
         if (!veiculoRepository.ProcuraId(id) ){
             throw new RuntimeException("ID inválido - Motivo: Nao Existe no Banco de Dados");
-        }else {
+        } else {
             Optional<Veiculo> veiculo = this.veiculoRepository.findById(id);
             return veiculo;
         }
@@ -138,10 +141,14 @@ public class VeiculoService {
     @Transactional(rollbackFor = Exception.class)
     public void delete( @RequestParam("id") final Long id) {
 
+        Movimentacao movimentacao = movimentacaoRepository.findById(id).orElse(null);
 
         Veiculo veiculo = this.veiculoRepository.findById(id).orElse(null);
 
-        if(veiculoRepository.veiculoExistente(veiculo.getId())){
+        if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null ) {
+            throw new RuntimeException(" Veiculo esta estacionado dentro do estacionamento ainda movimentaçao nº " + movimentacao.getId());
+
+        } if(veiculoRepository.veiculoExistente(veiculo.getId())){
             veiculo.setAtivo(false);
             veiculoRepository.save(veiculo);
         }else {
