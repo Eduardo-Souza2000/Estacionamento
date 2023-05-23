@@ -1,6 +1,7 @@
 package br.com.uniametica.estacionamento.service;
 
 import br.com.uniametica.estacionamento.entity.Marca;
+import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
 import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.MarcaRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +30,6 @@ public class VeiculoService {
     private MarcaRepository marcaRepository;
     @Autowired
     private MovimentacaoRepository movimentacaoRepository;
-
 
 
 
@@ -65,74 +66,57 @@ public class VeiculoService {
 
         if (veiculobanco == null || !veiculo.getId().equals(veiculobanco.getId())) {
             throw new RuntimeException(" Não foi possivel identificar o registro informado");
-        }
-        if (veiculo.getPlaca() == null){
+        }else if (veiculo.getPlaca() == null){
             throw new RuntimeException(" Favor Inserir uma PLaca Valida, pois e nula");
-        }
-        if (!veiculo.getPlaca().matches("[a-zA-Z]{3}-[0-9]{4}|[a-zA-Z]{3}[0-9]{4}" +
+        }else if (!veiculo.getPlaca().matches("[a-zA-Z]{3}-[0-9]{4}|[a-zA-Z]{3}[0-9]{4}" +
                 "|[a-zA-Z]{3}[0-9][a-zA-Z][0-9]{2}|[a-zA-Z]{3}-[0-9][a-zA-Z][0-9]{2}")) {
             throw new RuntimeException(" Placa Invalida");
-        }
-        if (veiculo.getModelo() == null){
-            throw new RuntimeException(" Favor Inserir modelo Valido, pois e nula");
-        }
-        if (veiculo.getCor() == null) {
-            throw new RuntimeException(" Favor Inserir Cor Valida, pois e nula");
-        }
-        if (veiculo.getTipo() == null) {
-            throw new RuntimeException(" Favor Inserir Tipo valido, pois e nula");
-        }
-        if (veiculo.getAno() == null) {
-            throw new RuntimeException(" Favor Inserir Ano válido, pois e nula");
-        }
-        if(veiculo.getAtualizacao() == null) {
-            throw new RuntimeException(" DATA DE ATUALIZAÇAO nula");
-        }
-        if (veiculo.getCadastro() == null){
-            throw new RuntimeException(" DATA DE cadastro nula");
-        }
+        } else if (veiculoRepository.ProcuraPlaca(veiculo.getPlaca())) {
 
-        veiculoRepository.save(veiculo);
+            if(!veiculoRepository.placaexistenteNoVeiculo(veiculo.getPlaca()).equals(veiculo.getId())){
+                throw new RuntimeException(" Placa não corresponde ao Carro atualizado");
+            }
+        }else if (veiculo.getModelo() == null){
+            throw new RuntimeException(" Favor Inserir modelo Valido, pois e nulo");
+        }else if (veiculo.getCor() == null) {
+            throw new RuntimeException(" Favor Inserir Cor Valida, pois e nula");
+        }else if (veiculo.getTipo() == null) {
+            throw new RuntimeException(" Favor Inserir Tipo valido, pois e nula");
+        }else if (veiculo.getAno() == null || veiculo.getAno() < 1900 || veiculo.getAno() > (LocalDate.now().getYear()+1) ) {
+            throw new RuntimeException(" Favor Inserir Ano válido, pois e nula");
+        }else {
+            veiculoRepository.save(veiculo);
+        }
     }
 
 
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(final Veiculo veiculo){
 
+
+
         if (veiculo.getPlaca() == null){
             throw new RuntimeException("Placa Nula");
-        }
-        if (!veiculo.getPlaca().matches("[a-zA-Z]{3}-[0-9]{4}|[a-zA-Z]{3}[0-9]{4}" +
+        }else if (!veiculo.getPlaca().matches("[a-zA-Z]{3}-[0-9]{4}|[a-zA-Z]{3}[0-9]{4}" +
                 "|[a-zA-Z]{3}[0-9][a-zA-Z][0-9]{2}|[a-zA-Z]{3}-[0-9][a-zA-Z][0-9]{2}")) {
             throw new RuntimeException(" Placa Invalida");
-        }
-        if (veiculoRepository.ProcuraPlaca(veiculo.getPlaca())){
+        }else if (veiculoRepository.ProcuraPlaca(veiculo.getPlaca())){
             throw new RuntimeException("Placa ja existe no banco");
-        }
-        if (veiculo.getModelo() == null){
+        }else if (veiculo.getModelo() == null){
             throw new RuntimeException("modelo inválido");
-        }
-        if(veiculo.getModelo().getMarca() == null){
-            throw new RuntimeException("Marca inválido");
-        }
-        if (!modeloRepository.modeloExistente(veiculo.getModelo().getId())){
+        }else if (!modeloRepository.modeloExistente(veiculo.getModelo().getId())){
             throw new RuntimeException("Modelo Nao existe no Banco de Dados");
-        }
-        if (!marcaRepository.marcaIdExistentes(veiculo.getModelo().getMarca().getId())){
-            throw new RuntimeException("Marca Nao existe no Banco de Dados");
-        }
-        if (veiculo.getCor() == null) {
+        }else if (veiculo.getCor() == null) {
             throw new RuntimeException("Cor inválido");
-        }
-        if (veiculo.getTipo() == null) {
+        } else if(!modeloRepository.getById(veiculo.getModelo().getId()).isAtivo()){
+            throw new RuntimeException("Modelo não está ativo no banco de dados");
+        }else if (veiculo.getTipo() == null) {
             throw new RuntimeException("Tipo inválido");
-        }
-        if (veiculo.getAno() == null) {
+        } else if (veiculo.getAno() == null || veiculo.getAno() < 1900 || veiculo.getAno() > (LocalDate.now().getYear()+1)) {
             throw new RuntimeException("Ano inválido");
+        }else {
+            veiculoRepository.save(veiculo);
         }
-
-        veiculoRepository.save(veiculo);
-
 
     }
 
