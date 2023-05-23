@@ -129,10 +129,13 @@ public class VeiculoService {
 
         Veiculo veiculo = this.veiculoRepository.findById(id).orElse(null);
 
-        if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null ) {
-            throw new RuntimeException(" Veiculo esta estacionado dentro do estacionamento ainda movimentaçao nº " + movimentacao.getId());
-
-        } if(veiculoRepository.veiculoExistente(veiculo.getId())){
+        if (id == null){
+            throw new RuntimeException(" Id do Veiculo Invalido");
+        } else if (!veiculoRepository.ProcuraId(id)){
+            throw new RuntimeException(" Veiculo Não existe no banco");
+        } else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null ) {
+            throw new RuntimeException(" Veiculo não pode ser deletado, pois esta estacionado dentro do estacionamento.  movimentaçao nº " + movimentacao.getId());
+        } else if(veiculoRepository.veiculoExistente(id)){
             veiculo.setAtivo(false);
             veiculoRepository.save(veiculo);
         }else {

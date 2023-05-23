@@ -29,4 +29,7 @@ public interface CondutorRepository extends JpaRepository <Condutor, Long> {
     @Query(value = "select exists (select * from condutores where cpf = :cpf)", nativeQuery = true)
     boolean cpfExistente(@Param("cpf") final String cpf);
 
+    @Query(value = "select condutor.id from Condutor condutor where condutor.cpf = :cpf")
+    Long cpfExistentenoCondutor(@Param("cpf") String cpf);
+
 }
