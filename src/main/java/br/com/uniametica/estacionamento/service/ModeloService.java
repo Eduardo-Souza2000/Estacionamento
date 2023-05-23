@@ -3,6 +3,7 @@ package br.com.uniametica.estacionamento.service;
 import br.com.uniametica.estacionamento.entity.Condutor;
 import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Veiculo;
+import br.com.uniametica.estacionamento.repository.MarcaRepository;
 import br.com.uniametica.estacionamento.repository.ModeloRepository;
 import br.com.uniametica.estacionamento.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ModeloService {
     @Autowired
     private ModeloRepository modeloRepository;
-
+    @Autowired
+    private MarcaRepository marcaRepository;
 
 
     public Optional<Modelo> procurar(Long id){
@@ -52,18 +54,17 @@ public class ModeloService {
     public void cadastrarModelo(final Modelo modelo){
 
 
-        if (!modelo.getNome().matches("^[a-zA-Z0-1]{1}[a-zA-Z0-1\s]{0,48}$")){
+        if (!modelo.getNome().matches("^[a-zA-Z0-9]{1}[a-zA-Z0-9\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido favor verificar como escreveu o nome se esta correto");
-        }
-         if(modelo.getMarca() == null){
+        }else if(modelo.getMarca() == null) {
             throw new RuntimeException("Marca inválido");
-        }
-         if (modeloRepository.existente(modelo.getNome())){
+        } else if (!marcaRepository.idExistente(modelo.getMarca().getId())) {
+            throw new RuntimeException("Marca nao existe no banco de dados inválido");
+        } else if (modeloRepository.existente(modelo.getNome())){
              throw new RuntimeException("Nome Repetido");
-         }
-
-
-        modeloRepository.save(modelo);
+        }else {
+            modeloRepository.save(modelo);
+        }
 
     }
 

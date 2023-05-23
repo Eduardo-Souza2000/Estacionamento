@@ -32,4 +32,6 @@ public interface CondutorRepository extends JpaRepository <Condutor, Long> {
     @Query(value = "select condutor.id from Condutor condutor where condutor.cpf = :cpf")
     Long cpfExistentenoCondutor(@Param("cpf") String cpf);
 
+    @Query (value = "select condutor.id from Condutor condutor where condutor.telefone = :telefone")
+    Long telefoneExistenteCondutor (@Param("telefone") String telefone);
 }

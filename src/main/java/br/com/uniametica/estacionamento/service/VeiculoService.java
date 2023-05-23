@@ -64,9 +64,11 @@ public class VeiculoService {
 
         final Veiculo veiculobanco = this.veiculoRepository.findById(id).orElse(null);
 
-        if (veiculobanco == null || !veiculo.getId().equals(veiculobanco.getId())) {
+        if (id == null) {
             throw new RuntimeException(" Não foi possivel identificar o registro informado");
-        }else if (veiculo.getPlaca() == null){
+        } else if (!veiculoRepository.ProcuraId(id)) {
+            throw new RuntimeException("Não foi possivel identificar o registro informado pois o ID não confere");
+        } else if (veiculo.getPlaca() == null){
             throw new RuntimeException(" Favor Inserir uma PLaca Valida, pois e nula");
         }else if (!veiculo.getPlaca().matches("[a-zA-Z]{3}-[0-9]{4}|[a-zA-Z]{3}[0-9]{4}" +
                 "|[a-zA-Z]{3}[0-9][a-zA-Z][0-9]{2}|[a-zA-Z]{3}-[0-9][a-zA-Z][0-9]{2}")) {
@@ -76,6 +78,7 @@ public class VeiculoService {
             if(!veiculoRepository.placaexistenteNoVeiculo(veiculo.getPlaca()).equals(veiculo.getId())){
                 throw new RuntimeException(" Placa não corresponde ao Carro atualizado");
             }
+
         }else if (veiculo.getModelo() == null){
             throw new RuntimeException(" Favor Inserir modelo Valido, pois e nulo");
         }else if (veiculo.getCor() == null) {
@@ -104,7 +107,7 @@ public class VeiculoService {
             throw new RuntimeException("Placa ja existe no banco");
         }else if (veiculo.getModelo() == null){
             throw new RuntimeException("modelo inválido");
-        }else if (!modeloRepository.modeloExistente(veiculo.getModelo().getId())){
+        }else if (!modeloRepository.ProcuraId(veiculo.getModelo().getId())){
             throw new RuntimeException("Modelo Nao existe no Banco de Dados");
         }else if (veiculo.getCor() == null) {
             throw new RuntimeException("Cor inválido");

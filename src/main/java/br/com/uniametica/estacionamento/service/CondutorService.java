@@ -62,35 +62,26 @@ public class CondutorService {
 
             if(condutor.getNome() == null){
                 throw new RuntimeException("Nome Nulo");
-            }
-            if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")) {
+            }else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")) {
                 throw new RuntimeException("Nome inválido");
-            }
-            if(condutor.getCpf() == null){
-                throw new RuntimeException("Cpf inválido");
-            }
-            if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
-                throw new RuntimeException(" Número de cpf faltando");
-            }
-            if (condutor.getTelefone() == null) {
-                throw new RuntimeException("Telefone inválido");
-            }
-            if (condutorRepository.nomeExistente(condutor.getNome())) {
+            }else if(condutor.getCpf() == null){
+                throw new RuntimeException("Cpf Nulo");
+            }else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+                throw new RuntimeException(" Número de cpf Invalido");
+            }else if (condutor.getTelefone() == null) {
+                throw new RuntimeException("Telefone Nulo");
+            }else if (condutorRepository.nomeExistente(condutor.getNome())) {
                 throw new RuntimeException("Nome Repetido");
-            }
-           if (condutorRepository.idExistente(condutor.getId())) {
+            }else if (condutorRepository.idExistente(condutor.getId())) {
                throw new RuntimeException("ID Repetido");
-           }
-           if (condutorRepository.telefoneExistente(condutor.getTelefone())) {
+           }else if (condutorRepository.telefoneExistente(condutor.getTelefone())) {
                 throw new RuntimeException("Telefone Repetido chefe");
-            }
-           if (condutorRepository.cpfExistente(condutor.getCpf())) {
+           }else if (condutorRepository.cpfExistente(condutor.getCpf())) {
                 throw new RuntimeException("CPF Repetido chefe");
+            }else {
+                condutorRepository.save(condutor);
             }
 
-
-
-           condutorRepository.save(condutor);
 
     }
 
@@ -100,27 +91,31 @@ public class CondutorService {
 
         final Condutor condutorbanco  = this.condutorRepository.findById(id).orElse(null);
 
-        if (condutorbanco == null || !condutor.getId().equals(condutorbanco.getId())) {
-            throw new RuntimeException(" Não foi possivel identificar o registro informado");
-        }
-        if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
+        if (id == null){
+            throw new RuntimeException("Id invalido");
+        } else if (condutor.getId().equals(id)) {
+            throw new RuntimeException("Não foi possivel identificar o registro informado pois o ID não confere");
+        } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido");
-        }
-        if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
+        }else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
             throw new RuntimeException(" Número de cpf faltando");
-        }
-        if (condutorRepository.nomeExistente(condutor.getNome())) {
+        }else if (condutorRepository.nomeExistente(condutor.getNome())) {
             throw new RuntimeException(" Nome Repetido");
-        }
-        if(condutor.getCpf() == null) {
-            throw new RuntimeException(" CPF inválido");
-        }
-        if (!condutor.getTelefone().matches("^[0-9\s]{2,3}[0-9]{4,5}[-][0-9]{4}$")) {
+        }else if(condutor.getCpf() == null) {
+            throw new RuntimeException(" CPF Nulo");
+        }else if (!condutor.getTelefone().matches("^[0-9\s]{2,3}[0-9]{4,5}[-][0-9]{4}$")) {
             throw new RuntimeException(" Telefone com Número Faltando");
+        } else if (condutorRepository.cpfExistente(condutor.getCpf())) {
+            if (!condutorRepository.cpfExistentenoCondutor(condutor.getCpf()).equals(condutor.getId())){
+                throw new RuntimeException(" Cpf não corresponde ao Condutor atualizado");
+            }
+        } else if (condutorRepository.telefoneExistente(condutor.getTelefone())){
+            if (!condutorRepository.telefoneExistenteCondutor(condutor.getTelefone()).equals(condutor.getId())){
+                throw new RuntimeException(" Telefone não corresponde ao Condutor atualizado");
+            }
+        }else {
+            condutorRepository.save(condutor);
         }
-
-        condutorRepository.save(condutor);
-
 
     }
 
@@ -130,8 +125,13 @@ public class CondutorService {
 
         Condutor condutor = this.condutorRepository.findById(id).orElse(null);
 
-
-        if(condutorRepository.condutorExistente(condutor.getId())){
+        if (id == null){
+            throw new RuntimeException("ID NULO");
+        } else if (!condutorRepository.idExistente(id)) {
+            throw new RuntimeException("ID NULO, POIS NÃO EXISTE NO BANCO");
+        } else if (condutorRepository.condutorExistente(id) && movimentacao.getSaida() == null) {
+            throw new RuntimeException(" Condutor não pode ser deletado, pois esta com o carro  dentro do estacionamento.  movimentaçao nº " + movimentacao.getSaida().equals(movimentacao.getId()));
+        }else if(condutorRepository.condutorExistente(condutor.getId())){
             condutor.setAtivo(false);
             condutorRepository.save(condutor);
         } else {
