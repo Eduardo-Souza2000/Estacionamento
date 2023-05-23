@@ -113,7 +113,7 @@ public class CondutorService {
             if (!condutorRepository.telefoneExistenteCondutor(condutor.getTelefone()).equals(condutor.getId())){
                 throw new RuntimeException(" Telefone não corresponde ao Condutor atualizado");
             }
-        }else {
+        } else {
             condutorRepository.save(condutor);
         }
 
