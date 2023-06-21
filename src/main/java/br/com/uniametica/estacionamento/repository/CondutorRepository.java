@@ -19,7 +19,6 @@ public interface CondutorRepository extends JpaRepository <Condutor, Long> {
     boolean condutorExistente(@Param("id") final Long id);
 
 
-
     @Query(value = "select exists (select * from condutores where id = :id)", nativeQuery = true)
     boolean idExistente(@Param("id") final Long id);
 

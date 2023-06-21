@@ -75,10 +75,6 @@ public class MovimentacaoService {
 
         if(!movimentacaoRepository.ProcuraId(movimentacao.getId())) {
             throw new RuntimeException("FAVOR INSERIR UMA MOVIMENTAÇÃO VÁLIDA");
-        }else if(movimentacao.getSaida() == null){
-            throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
-        }else if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
-            throw new RuntimeException(" A entrada deve ser antes da saida");
         }else if (movimentacao.getCondutor() == null){
             throw new RuntimeException("Condutor Nulo");
         }else if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
@@ -89,10 +85,6 @@ public class MovimentacaoService {
             throw new RuntimeException("Veiculo inativo");
         }else if(!modeloRepository.modeloExistente(movimentacao.getVeiculo().getModelo().getId())){
             throw new RuntimeException("Modelo Não Existe No Banco de Dados");
-        }else if (!marcaRepository.marcaIdExistentes(movimentacao.getVeiculo().getModelo().getMarca().getId())){
-            throw new RuntimeException("Marca Não Existe No Banco de Dados");
-        } else if (marcaRepository.NomeMarcaExistente(String.valueOf(movimentacao.getVeiculo().getModelo().getMarca().getNome().matches("[a-zA-Z]{2,50}")))){
-            throw new RuntimeException("Nome da Marca Invalido");
         } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
             throw new RuntimeException("Condutor Não Existe No Banco de Dados");
         } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
@@ -109,6 +101,8 @@ public class MovimentacaoService {
 
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(final Movimentacao movimentacao){
+
+
 
         if (movimentacao.getCondutor() == null){
             throw new RuntimeException("Condutor Nulo");
@@ -152,7 +146,8 @@ public class MovimentacaoService {
     @Transactional(rollbackFor = Exception.class)
     public String finalizarMovimentacao (@RequestParam("id") Long id, Movimentacao movimentacao){
 
-    Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
+        Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
+
 
 
     //Condutor objCondutor = movimentacaoRepository.obterCondutor();
@@ -171,7 +166,7 @@ public class MovimentacaoService {
     }else if (movimentacao.getCondutor() == null){
         throw new RuntimeException("Condutor Nulo");
     } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
-        throw new RuntimeException("Condutor inativo.");
+        throw new RuntimeException("Condutor Inativo.");
     } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
         throw new RuntimeException("Condutor Não Existe No Banco de Dados");
     } else if (movimentacao.getVeiculo() == null) {
@@ -185,7 +180,7 @@ public class MovimentacaoService {
     }  else {
 
 
-        //TEMPO DENTRO DO ESTACIONAMENTO
+                                //TEMPO DENTRO DO ESTACIONAMENTO
 
         int tempoMulta = calculaMulta(configuracaoRepository.getById(Long.valueOf(1)), movimentacao);
         int calculaTempo = calculaTempo(movimentacao);
@@ -225,6 +220,9 @@ public class MovimentacaoService {
                                             //TEMPO DO CONDUTOR DO ESTACIONAMENTO
 
         //CONVERTE UM VALOR LONG EM INT
+
+
+
         int condutorExistente = Math.toIntExact(movimentacao.getCondutor().getId());
 
         //PESQUISA O NUMERO DO ID CONFORME FOI PASSADO ANTERIORMENTE
