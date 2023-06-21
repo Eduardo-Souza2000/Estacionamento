@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.apache.logging.log4j.util.LambdaUtil.getMessage;
 
 @Controller
+@CrossOrigin
 @RequestMapping (value = "/api/modelo")
 public class ModeloController {
 
