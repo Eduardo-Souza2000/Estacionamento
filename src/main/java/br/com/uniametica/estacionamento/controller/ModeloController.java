@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.apache.logging.log4j.util.LambdaUtil.getMessage;
 
 @Controller
-@CrossOrigin
 @RequestMapping (value = "/api/modelo")
 public class ModeloController {
 
@@ -34,8 +33,8 @@ public class ModeloController {
 
     private Modelo modelo;
 
-    @GetMapping
-    public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByIdRequest(@PathVariable("id") final Long id){
 
         try{
             return ResponseEntity.ok(modeloService.procurar(id));
@@ -72,9 +71,9 @@ public class ModeloController {
 
 
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> editar(
-            @RequestParam("id") final Long id,
+            @PathVariable("id") final Long id,
             @RequestBody final  Modelo modelo
     ) {
        try{
@@ -93,8 +92,8 @@ public class ModeloController {
 
 
 
-    @DeleteMapping
-    public ResponseEntity<?> delete( @RequestParam("id") final Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete( @PathVariable("id") final Long id){
         try {
             this.modeloService.delete(id);
             return ResponseEntity.ok("Registro Alterado com sucesso");
