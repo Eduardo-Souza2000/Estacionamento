@@ -12,6 +12,7 @@ public interface CondutorRepository extends JpaRepository <Condutor, Long> {
     List<Condutor> findByAtivoTrue();
 
 
+
     @Query(value = "select exists (select * from condutores where nome = :nome)", nativeQuery = true)
     boolean nomeExistente(@Param("nome") final String nome);
 
