@@ -3,6 +3,7 @@ package br.com.uniametica.estacionamento.service;
 import br.com.uniametica.estacionamento.entity.Configuracao;
 import br.com.uniametica.estacionamento.entity.Modelo;
 import br.com.uniametica.estacionamento.entity.Movimentacao;
+import br.com.uniametica.estacionamento.entity.Veiculo;
 import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
 import jakarta.persistence.Access;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +32,12 @@ public class ConfiguracaoService {
             return configuracao;
         }
 
+    }
+
+    public List<Configuracao> procurarLista(){
+
+        List<Configuracao> Configuracao = configuracaoRepository.findAll();
+        return Configuracao;
     }
 
     @Transactional(rollbackFor = Exception.class)

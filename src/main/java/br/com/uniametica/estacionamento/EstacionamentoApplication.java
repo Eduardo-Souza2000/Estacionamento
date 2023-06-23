@@ -1,4 +1,5 @@
-package br.com.uniametica.estacionamento;
+package br.com.uniametica.estacio.
+		namento;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

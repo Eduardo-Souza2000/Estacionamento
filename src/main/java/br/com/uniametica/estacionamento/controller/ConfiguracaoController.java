@@ -20,8 +20,8 @@ public class ConfiguracaoController {
     private ConfiguracaoService configuracaoService;
 
 
-    @GetMapping
-    public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByIdRequest(@PathVariable("id") final Long id){
 
         try{
             return ResponseEntity.ok(configuracaoService.procuraconfiguracao(id));
@@ -29,6 +29,12 @@ public class ConfiguracaoController {
             return ResponseEntity.badRequest().body("ERRO " + e.getMessage());
         }
 
+    }
+
+    @GetMapping ({"/lista"})
+    public ResponseEntity<?> Listacompleta()
+    {
+        return ResponseEntity.ok(configuracaoService.procurarLista());
     }
 
     @PostMapping
@@ -45,9 +51,9 @@ public class ConfiguracaoController {
 
 
 
-    @PutMapping
+    @PutMapping ("/{id}")
     public ResponseEntity<?> editar(
-            @RequestParam("id") final Long id,
+            @PathVariable("id") final Long id,
             @RequestBody final  Configuracao configuracao
     ) {
         try{
