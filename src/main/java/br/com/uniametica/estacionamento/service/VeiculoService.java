@@ -12,6 +12,8 @@ import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -126,7 +128,8 @@ public class VeiculoService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public void delete( @RequestParam("id") final Long id) {
+    @DeleteMapping("/{id}")
+    public void delete( @PathVariable("id") final Long id) {
 
         Movimentacao movimentacao = movimentacaoRepository.findById(id).orElse(null);
 
@@ -136,8 +139,6 @@ public class VeiculoService {
             throw new RuntimeException(" Id do Veiculo Invalido");
         } else if (!veiculoRepository.ProcuraId(id)){
             throw new RuntimeException(" Veiculo Não existe no banco");
-        } else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null ) {
-            throw new RuntimeException(" Veiculo não pode ser deletado, pois esta estacionado dentro do estacionamento.  movimentaçao nº " + movimentacao.getId());
         } else if(veiculoRepository.veiculoExistente(id)){
             veiculo.setAtivo(false);
             veiculoRepository.save(veiculo);
