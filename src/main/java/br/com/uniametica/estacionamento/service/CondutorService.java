@@ -93,8 +93,6 @@ public class CondutorService {
 
         if (id == null){
             throw new RuntimeException("Id invalido");
-        } else if (condutor.getId().equals(id)) {
-            throw new RuntimeException("Não foi possivel identificar o registro informado pois o ID não confere");
         } else if (!condutor.getNome().matches("^[a-zA-Z]{2}[a-zA-Z\s]{0,48}$")){
             throw new RuntimeException(" Nome inválido");
         }else if (!condutor.getCpf().matches("[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}")) {
