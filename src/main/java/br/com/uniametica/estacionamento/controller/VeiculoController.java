@@ -23,8 +23,8 @@ public class VeiculoController {
     @Autowired
     private VeiculoService veiculoService;
 
-    @GetMapping
-    public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByIdRequest(@PathVariable("id") final Long id){
 
         try{
             return ResponseEntity.ok(veiculoService.procurarVeiculo(id));
@@ -62,9 +62,9 @@ public class VeiculoController {
 
 
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> editar(
-            @RequestParam("id") final Long id,
+            @PathVariable("id") final Long id,
             @RequestBody final  Veiculo veiculo
     ) {
         try{
@@ -83,8 +83,8 @@ public class VeiculoController {
 
 
 
-    @DeleteMapping
-    public ResponseEntity<?> delete( @RequestParam("id") final Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete( @PathVariable("id") final Long id){
         try {
             this.veiculoService.delete(id);
             return ResponseEntity.ok("Registro Desativado");

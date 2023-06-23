@@ -6,5 +6,20 @@ public enum Cores {
     Amarelo,
     Verde,
     Vermelho,
-    Prata;
+    Prata,
+    Branco,
+    Cinza,
+    Marrom,
+    Laranja,
+    Roxo,
+    Rosa,
+    Bege,
+    Ouro,
+    Bronze,
+    Champagne,
+    Cobre,
+    Turquesa,
+    Violeta,
+    Bordô;
 }
+

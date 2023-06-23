@@ -96,7 +96,7 @@ public class ModeloService {
 
             if (modelobanco == null || !modelo.getId().equals(modelobanco.getId())) {
                 throw new RuntimeException("Não foi possivel identificar o registro informado");
-            } else if (!modelo.getNome().matches("[a-zA-Z]{2,50}")){
+            } else if (!modelo.getNome().matches("[a-zA-Z0-9]{1,50}\\s*")){
                 throw new RuntimeException("Nome inválido");
             } else if (modeloRepository.existente(modelo.getNome())) {
                 throw new RuntimeException("Nome Repetido");
