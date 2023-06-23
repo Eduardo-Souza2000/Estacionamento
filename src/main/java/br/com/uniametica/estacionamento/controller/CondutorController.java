@@ -24,8 +24,8 @@ public class CondutorController {
     private CondutorService condutorService;
 
 
-    @GetMapping
-    public ResponseEntity<?> findByIdRequest(@RequestParam("id") final Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByIdRequest(@PathVariable("id") final Long id){
 
         try{
             return ResponseEntity.ok(condutorService.procurarCondutor(id));
@@ -63,9 +63,9 @@ public class CondutorController {
 
 
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<?> editar(
-            @RequestParam("id") final Long id,
+            @PathVariable("id") final Long id,
             @RequestBody final  Condutor condutor
     ) {
         try{
@@ -84,8 +84,8 @@ public class CondutorController {
 
 
 
-    @DeleteMapping
-    public ResponseEntity<?> delete( @RequestParam("id") final Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete( @PathVariable("id") final Long id){
         try {
             this.condutorService.delete(id);
             return ResponseEntity.ok("Registro Desativado");
