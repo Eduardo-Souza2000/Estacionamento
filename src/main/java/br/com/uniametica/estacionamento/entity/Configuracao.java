@@ -33,7 +33,7 @@ public class Configuracao  extends AbstractEntity{
     @Column(name = "tempodedesconto", nullable = false)
     private LocalTime tempoDeDesconto;
     @Getter @Setter
-    @Column(name = "vgerardesconto", nullable = false)
+    @Column(name = "gerardesconto", nullable = false)
     private boolean gerarDesconto;
     @Getter @Setter
     @Column(name = "vagasmoto", nullable = false)

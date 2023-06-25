@@ -32,10 +32,10 @@ public class ConfiguracaoController {
     }
 
     @GetMapping ({"/lista"})
-    public ResponseEntity<?> Listacompleta()
-    {
+    public ResponseEntity<?> Listacompleta(){
         return ResponseEntity.ok(configuracaoService.procurarLista());
     }
+
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody final Configuracao configuracao){

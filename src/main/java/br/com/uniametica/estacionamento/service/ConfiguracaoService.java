@@ -1,9 +1,6 @@
 package br.com.uniametica.estacionamento.service;
 
-import br.com.uniametica.estacionamento.entity.Configuracao;
-import br.com.uniametica.estacionamento.entity.Modelo;
-import br.com.uniametica.estacionamento.entity.Movimentacao;
-import br.com.uniametica.estacionamento.entity.Veiculo;
+import br.com.uniametica.estacionamento.entity.*;
 import br.com.uniametica.estacionamento.repository.ConfiguracaoRepository;
 import jakarta.persistence.Access;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +33,11 @@ public class ConfiguracaoService {
 
     public List<Configuracao> procurarLista(){
 
-        List<Configuracao> Configuracao = configuracaoRepository.findAll();
-        return Configuracao;
+        List<Configuracao> configuracao = configuracaoRepository.findAll();
+        return configuracao;
     }
+
+
 
     @Transactional(rollbackFor = Exception.class)
     public void editarMovimentacao(@RequestParam("id")  Long id, @RequestBody  Configuracao configuracao) {

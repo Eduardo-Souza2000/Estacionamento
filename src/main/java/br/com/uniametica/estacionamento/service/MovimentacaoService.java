@@ -148,11 +148,6 @@ public class MovimentacaoService {
 
         Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
 
-
-
-    //Condutor objCondutor = movimentacaoRepository.obterCondutor();
-
-    //CHEGAGENS
     if (id == null){
         throw new RuntimeException("ID INVÁLIDO");
     } else if (!movimentacao.getId().equals(id)) {
@@ -163,20 +158,6 @@ public class MovimentacaoService {
             throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
     }else if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
         throw new RuntimeException(" A entrada deve ser antes da saida");
-    }else if (movimentacao.getCondutor() == null){
-        throw new RuntimeException("Condutor Nulo");
-    } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
-        throw new RuntimeException("Condutor Inativo.");
-    } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
-        throw new RuntimeException("Condutor Não Existe No Banco de Dados");
-    } else if (movimentacao.getVeiculo() == null) {
-        throw new RuntimeException("Veiculo Nulo");
-    } else if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
-        throw new RuntimeException("Veiculo Não Existe No Banco de Dados");
-    }else if (!veiculoRepository.getById(movimentacao.getVeiculo().getId()).isAtivo()) {
-        throw new RuntimeException("Veiculo inativo");
-    }else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null){
-        throw new RuntimeException("Veiculo já está estacionado.");
     }  else {
 
 
@@ -271,8 +252,7 @@ public class MovimentacaoService {
 
 
         movimentacao.setValorTotal(BigDecimal.valueOf(( calculaTempo - (tempoMulta/60)) * objConfiguracao.getValorHora().intValue() + (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue()) - (movimentacao.getTempoDesconto() * objConfiguracao.getValorHora().intValue())));
-
-
+        movimentacao.setAtivo(false);
 
 
     condutorRepository.save(condutorBanco);

@@ -16,7 +16,8 @@ import java.time.LocalTime;
 @Table(name = "condutores", schema = "public")
 @Audited
 @AuditTable(value = "condutor_audit", schema = "audit")
-public class Condutor extends AbstractEntity {
+public class
+Condutor extends AbstractEntity {
     //OS @ CHAMAMOS DE ANNOTATION
     @Getter @Setter
     @Column(name = "nome", nullable = false, length = 100)
