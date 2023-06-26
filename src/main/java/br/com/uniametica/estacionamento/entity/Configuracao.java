@@ -29,10 +29,7 @@ public class Configuracao  extends AbstractEntity{
     @Column(name = "fimexpediente", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime fimExpediente;
-    @Getter @Setter
-    @Column(name = "tempoparadesconto", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime tempoParaDesconto;
+
     @Getter @Setter
     @Column(name = "tempodedesconto", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")

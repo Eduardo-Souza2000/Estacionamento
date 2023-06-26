@@ -68,9 +68,7 @@ public class ConfiguracaoService {
         if (configuracao.getValorHora() == null) {
             throw new RuntimeException(" Valor da Hora inválido");
         }
-        if (configuracao.getTempoParaDesconto() == null){
-            throw new RuntimeException(" Tempo para desconto inválido");
-        }
+
         if (configuracao.getValorMinutoMulta() == null) {
             throw new RuntimeException(" Valor minuto Multa inválido");
         }
@@ -99,9 +97,7 @@ public class ConfiguracaoService {
         if (configuracao.getValorHora() == null) {
             throw new RuntimeException(" Valor da Hora inválido");
         }
-        if (configuracao.getTempoParaDesconto() == null){
-            throw new RuntimeException(" Tempo para desconto inválido");
-        }
+
         if (configuracao.getValorMinutoMulta() == null) {
             throw new RuntimeException(" Valor minuto Multa inválido");
         }

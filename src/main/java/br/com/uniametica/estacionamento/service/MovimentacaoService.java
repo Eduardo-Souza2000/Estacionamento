@@ -252,6 +252,10 @@ public class MovimentacaoService {
 
 
         movimentacao.setValorTotal(BigDecimal.valueOf(( calculaTempo - (tempoMulta/60)) * objConfiguracao.getValorHora().intValue() + (tempoMulta * objConfiguracao.getValorMinutoMulta().intValue()) - (movimentacao.getTempoDesconto() * objConfiguracao.getValorHora().intValue())));
+
+
+
+
         movimentacao.setAtivo(false);
 
 
