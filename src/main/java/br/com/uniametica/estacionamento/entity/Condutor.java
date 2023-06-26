@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
-import org.jetbrains.annotations.NotNull;
-
-import java.time.LocalTime;
 
 @Entity
 //Referencia de tabela

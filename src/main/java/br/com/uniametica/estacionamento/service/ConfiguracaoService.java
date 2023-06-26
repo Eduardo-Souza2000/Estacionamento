@@ -29,6 +29,7 @@ public class ConfiguracaoService {
             return configuracao;
         }
 
+
     }
 
     public List<Configuracao> procurarLista(){
@@ -37,6 +38,12 @@ public class ConfiguracaoService {
         return configuracao;
     }
 
+
+    public Configuracao ultimaConf(){
+
+        Configuracao configuracao = configuracaoRepository.ultimaConfiguracao();
+        return configuracao;
+    }
 
 
     @Transactional(rollbackFor = Exception.class)

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@CrossOrigin
 @RequestMapping (value = "/api/configuracao")
 public class ConfiguracaoController {
 
@@ -36,6 +35,10 @@ public class ConfiguracaoController {
         return ResponseEntity.ok(configuracaoService.procurarLista());
     }
 
+    @GetMapping ("/ultima-configuracao")
+    public  ResponseEntity<?> ultimaConf(){
+        return ResponseEntity.ok(configuracaoService.ultimaConf());
+    }
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody final Configuracao configuracao){
