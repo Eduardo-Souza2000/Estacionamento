@@ -19,7 +19,7 @@ public interface MovimentacaoRepository extends JpaRepository<Movimentacao,Long>
 
 
 
-   @Query(value = "SELECT c FROM Configuracao c")
+    @Query (value = "select c from Configuracao c order By c.id desc limit 1")
     Configuracao obterConfiguracao();
 
 
