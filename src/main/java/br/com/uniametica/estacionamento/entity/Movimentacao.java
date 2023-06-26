@@ -1,13 +1,14 @@
 package br.com.uniametica.estacionamento.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+
 
 @Entity
 //Referencia de tabela
@@ -25,14 +26,17 @@ public class Movimentacao extends AbstractEntity{
 
     @Getter @Setter
     @Column(name = "hora")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalDateTime horaAtual;
 
     @Getter @Setter
     @Column(name = "entrada", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime entrada;
 
     @Getter @Setter
     @Column(name = "saida")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime saida;
 
     @Getter @Setter

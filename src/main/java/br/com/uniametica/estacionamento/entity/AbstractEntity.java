@@ -22,11 +22,12 @@ public abstract class AbstractEntity {
 
     @Getter @Setter
     @Column(name = "dtCadastro", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime cadastro;
 
     @Getter @Setter
     @Column(name = "dtAtualizacao")
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime atualizacao;
 
     @Getter @Setter
