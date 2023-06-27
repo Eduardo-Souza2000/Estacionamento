@@ -102,6 +102,9 @@ public class MovimentacaoService {
     @Transactional(rollbackFor = Exception.class)
     public void cadastrar(final Movimentacao movimentacao){
 
+        movimentacao.setEntrada(LocalDateTime.now());
+        movimentacaoRepository.save(movimentacao);
+
 
 
         if (movimentacao.getCondutor() == null){
