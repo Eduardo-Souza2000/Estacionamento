@@ -30,7 +30,7 @@ public class Movimentacao extends AbstractEntity{
     private LocalDateTime horaAtual;
 
     @Getter @Setter
-    @Column(name = "entrada", nullable = false)
+    @Column(name = "entrada")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime entrada;
 

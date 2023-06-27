@@ -73,8 +73,6 @@ public class MovimentacaoController {
     }
 
 
-
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete( @PathVariable("id") final Long id){
         try {
@@ -87,15 +85,18 @@ public class MovimentacaoController {
     }
 
 
-    @PutMapping(value = "/finalizar")
-    public ResponseEntity<?> finalizar(@RequestParam("id")final Long id,@RequestBody final  Movimentacao movimentacao){
+    @PutMapping("/finalizar/{id}")
+    public ResponseEntity<?> finalizar(
+            @PathVariable("id") final Long id){
         try{
-            return ResponseEntity.ok(movimentacaoService.finalizarMovimentacao(id,movimentacao));
+            this.movimentacaoService.finalizarMovimentacao(id);
+            return ResponseEntity.ok("Registro Atualizado com sucesso");
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body("Error " + e.getMessage());
         }
     }
+
 
 
 }

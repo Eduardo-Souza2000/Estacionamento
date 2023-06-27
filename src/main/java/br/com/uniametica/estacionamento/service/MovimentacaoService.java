@@ -144,18 +144,20 @@ public class MovimentacaoService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public String finalizarMovimentacao (@RequestParam("id") Long id, Movimentacao movimentacao){
+    public String finalizarMovimentacao (@RequestParam("id") Long id){
+
+        final Movimentacao  movimentacao = this.movimentacaoRepository.findById(id).orElse(null);
+
+
+        movimentacao.setSaida(LocalDateTime.now());
+        movimentacaoRepository.save(movimentacao);
 
         Configuracao objConfiguracao = movimentacaoRepository.obterConfiguracao();
 
     if (id == null){
         throw new RuntimeException("ID INVÁLIDO");
-    } else if (!movimentacao.getId().equals(id)) {
-        throw new RuntimeException("Não foi possivel identificar o registro informado pois o ID não confere");
-    }else if(!movimentacaoRepository.ProcuraId(id)) {
+    } else if(!movimentacaoRepository.ProcuraId(id)) {
             throw new RuntimeException("FAVOR INSERIR UMA MOVIMENTAÇÃO VÁLIDA");
-    }else if(movimentacao.getSaida() == null){
-            throw new RuntimeException("FAVOR INSERIR A DATA DE SAIDA");
     }else if (movimentacao.getSaida() != null && movimentacao.getEntrada().isAfter(movimentacao.getSaida())){
         throw new RuntimeException(" A entrada deve ser antes da saida");
     }  else {
@@ -167,7 +169,6 @@ public class MovimentacaoService {
         int calculaTempo = calculaTempo(movimentacao);
         int calculatempoCondutor = calculaTempo(movimentacao);
         LocalDateTime horaAtual = LocalDateTime.now();
-
 
 
         movimentacao.setTempoTotalhora(calculaTempo);
@@ -236,7 +237,7 @@ public class MovimentacaoService {
         }
 
 
-        Veiculo veiculoBanco = veiculoRepository.getById(id);
+        Veiculo veiculoBanco = veiculoRepository.getById(movimentacao.getVeiculo().getId());
 
 
         movimentacao.setValorDesconto(BigDecimal.valueOf(condutorBanco.getTempoDesconto() * objConfiguracao.getValorHora().intValue()));
@@ -259,9 +260,9 @@ public class MovimentacaoService {
         movimentacao.setAtivo(false);
 
 
-    condutorRepository.save(condutorBanco);
+        condutorRepository.save(condutorBanco);
 
-    movimentacaoRepository.save(movimentacao);
+        movimentacaoRepository.save(movimentacao);
 
 
     }
