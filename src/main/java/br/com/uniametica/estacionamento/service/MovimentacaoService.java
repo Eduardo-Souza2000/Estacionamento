@@ -111,19 +111,16 @@ public class MovimentacaoService {
             throw new RuntimeException("Condutor Nulo");
         }else if(!veiculoRepository.ProcuraId(movimentacao.getVeiculo().getId())){
             throw new RuntimeException("Veiculo Não Existe No Banco de Dados");
-        }else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() == null){
-            throw new RuntimeException("Veiculo já está estacionado.");
-        } else if (!veiculoRepository.getById(movimentacao.getVeiculo().getId()).isAtivo()) {
-            throw new RuntimeException("Veiculo inativo");
-        }else if(!modeloRepository.modeloExistente(movimentacao.getVeiculo().getModelo().getId())){
-            throw new RuntimeException("Modelo Não Existe No Banco de Dados");
+        }else if (veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId()) && movimentacao.getSaida() != null){
+            boolean id = veiculoRepository.veiculoExistente(movimentacao.getVeiculo().getId());
+            LocalDateTime saida = movimentacao.getSaida();
+
+            throw new RuntimeException("Veiculo já está estacionado." + id + "-" + saida + " - " + movimentacao.getVeiculo().getId());
         } else if(!condutorRepository.idExistente(movimentacao.getCondutor().getId())){
             throw new RuntimeException("Condutor Não Existe No Banco de Dados");
         } else if (!condutorRepository.getById(movimentacao.getCondutor().getId()).isAtivo()) {
             throw new RuntimeException("Condutor inativo.");
-        } else if (movimentacao.getEntrada() == null) {
-            throw new RuntimeException("Data de Entrada Nula.");
-        } else {
+        }  else {
             movimentacaoRepository.save(movimentacao);
         }
     }
